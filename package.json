@@ -1,0 +1,17 @@
+{
+  "name": "touric",
+  "version": "1.0.0",
+  "description": "Full-stack tourism app built with the MERN stack",
+  "main": "index.js",
+  "author": "Sergio Barria",
+  "license": "MIT",
+  "scripts": {
+    "client": "yarn --cwd client dev",
+    "server": "yarn --cwd server watch",
+    "dev": "concurrently \"yarn client\" \"yarn server\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
