@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 14.x
       - name: install dependencies
-        run: yarn install:client
+        run: yarn
       - name: lint
         run: yarn lint
       - name: typescript
