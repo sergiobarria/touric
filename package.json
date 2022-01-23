@@ -12,11 +12,14 @@
     "install:server": "cd server && yarn",
     "install": "yarn install:client && yarn install:server",
     "dev": "concurrently \"yarn client\" \"yarn server\"",
+    "deploy": "yarn --cwd client build && yarn --cwd server start",
     "typescript": "cd client && yarn tsc",
     "lint": "eslint '**/*.{js,tsx,ts,tsx}'",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "pre-commit": "yarn lint-staged && yarn typescript"
+    "pre-commit": "yarn lint-staged && yarn typescript",
+    "seed:import": "cd server/utils && node seeder.js -i",
+    "seed:delete": "cd server/utils && node seeder.js -d"
   },
   "dependencies": {},
   "devDependencies": {
@@ -39,7 +42,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
+      "eslint",
       "yarn prettier --write"
     ]
   },
