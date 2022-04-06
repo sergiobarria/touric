@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Server App for the Touric Website",
-  "main": "index.js",
+  "main": "server.js",
   "license": "MIT",
   "keywords": [],
   "scripts": {
-    "watch": "nodemon index.js",
+    "watch": "nodemon src/server.js",
     "start": "node server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "test": "jest --detectOpenHandles",

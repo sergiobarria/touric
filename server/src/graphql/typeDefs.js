@@ -2,13 +2,16 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Query {
+    "Get available tours from database"
     tours: [Tour!]!
+
+    "Get a single tour by ID"
     tour(id: ID!): Tour!
   }
 
   type Tour {
     """
-    Describes a Tour model
+    Schema definition for a Tour
     """
     id: ID!
     name: String!
