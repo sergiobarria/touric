@@ -1,6 +1,7 @@
 export interface ITour {
-  _id: string;
+  id: string;
   name: string;
+  slug: string;
   summary: string;
   description: string;
   price: number;

@@ -2,7 +2,10 @@ import { Link } from 'react-router-dom';
 
 import logo from '../../assets/img/logo-green.png';
 
-export default function Footer() {
+/**
+ * This component renders the application main footer for the application:
+ */
+export function Footer() {
   return (
     <footer className='flex items-center justify-between px-10 pt-16 pb-8 mt-auto bg-gray-600'>
       <img src={logo} alt='Logo' className='w-40' />

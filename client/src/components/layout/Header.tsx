@@ -4,7 +4,10 @@ import clsx from 'clsx';
 
 import logo from '../../assets/img/logo-white.png';
 
-export default function Header() {
+/**
+ * This component renders the application main header and navigation bar
+ */
+export function Header() {
   return (
     <header className='flex items-center h-20 px-12 bg-gray-600'>
       <nav className='flex items-center justify-between w-full'>

@@ -1,12 +1,13 @@
 import { useQuery, gql } from '@apollo/client';
 
-const GET_ALL_TOURS = gql`
-  query GetAllTours {
-    tours {
+const GET_TOUR = gql`
+  query GetTour($tourId: ID!) {
+    tour(id: $tourId) {
       id
-      slug
       name
+      slug
       summary
+      description
       duration
       maxGroupSize
       ratingsAverage
@@ -20,8 +21,10 @@ const GET_ALL_TOURS = gql`
   }
 `;
 
-export function useTours() {
-  const { data, loading, error } = useQuery(GET_ALL_TOURS);
+export function useTour(id: String) {
+  const { data, loading, error } = useQuery(GET_TOUR, {
+    variables: { tourId: id },
+  });
 
   return { data, loading, error };
 }
