@@ -2,8 +2,10 @@
   "css.validate": false,
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "headwind.runOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }

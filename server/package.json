@@ -6,7 +6,7 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
-    "watch": "nodemon server.js",
+    "watch": "nodemon src/server.js",
     "start": "node server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "test": "jest --detectOpenHandles",
@@ -14,17 +14,27 @@
   },
   "author": "Sergio Barria",
   "dependencies": {
+    "@prisma/client": "^3.11.1",
+    "apollo-server": "^3.6.7",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^14.2.0",
     "express": "^4.17.2",
+    "graphql": "^16.3.0",
+    "mongodb": "^4.5.0",
     "mongoose": "^6.1.7",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.5"
   },
   "devDependencies": {
     "jest": "^27.4.7",
     "nodemon": "^2.0.15",
+    "prettier-plugin-prisma": "^3.11.0",
+    "prisma": "^3.11.1",
     "supertest": "^6.2.2"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "jest": {
     "testEnvironment": "node"

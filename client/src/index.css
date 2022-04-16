@@ -1,13 +1,53 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* --clr-bg-gray: #f7f7f7;
+  --clr-bg-header: #444; */
+
+  --clr-primary: #55c571;
+
+  /* Gray variants */
+  --white: #fff;
+  --gray-50: #fafafa;
+  --gray-100: #f7f7f7;
+  --gray-200: #eaeaea;
+  --gray-300: #999;
+  --gray-400: #888;
+  --gray-500: #666;
+  --gray-600: #444;
+  --gray-700: #333;
+  --gray-800: #222;
+  --gray-900: #111;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+::selection {
+  background-color: var(--clr-primary);
+  color: #fff;
+}
+
+@layer base {
+  h1 {
+    @apply text-6xl;
+  }
+
+  h2 {
+    @apply uppercase text-4xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#7ed56f] to-[#28b485];
+    @apply hover:-skew-x-12 hover:scale-110 hover:drop-shadow-lg transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  .layout {
+    @apply px-14 mx-auto py-20;
+  }
+
+  .clip-image {
+    clip-path: polygon(0 0, 100% 0%, 100% 83%, 0% 98%);
+  }
+
+  .gradient {
+    @apply bg-gradient-to-br from-[#7dd56f] to-[#28b487];
+  }
 }

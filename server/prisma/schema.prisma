@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Model to describe a tour
+model Tour {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  name            String     @unique
+  slug            String     @unique
+  summary         String
+  description     String
+  duration        Int
+  maxGroupSize    Int
+  ratingsAverage  Float
+  ratingsQuantity Int
+  price           Int
+  imageCover      String
+  images          String[]
+  startDates      String[]
+  difficulty      Difficulty @default(medium)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@map("tours")
+}
+
+enum Difficulty {
+  easy
+  medium
+  difficult
+}
