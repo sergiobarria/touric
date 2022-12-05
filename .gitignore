@@ -1,8 +1,4 @@
 node_modules
-.DS_Store
-*.local
-
-.env
-
-/server/config.env
-/server/public/
+.idea
+dist
+build
