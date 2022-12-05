@@ -4,7 +4,7 @@
   "description": "Fullstack MERN app for a tour agency",
   "scripts": {
     "dev:server": "pnpm --filter server dev",
-    "lint:server": "pnpm --filter server lint",
+    "lint:server": "pnpm --filter server lint:fix",
     "lint:client": "pnpm --filter client lint",
     "lint": "pnpm lint:server",
     "pre-commit": "lint-staged",
