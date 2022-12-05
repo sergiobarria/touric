@@ -3,9 +3,21 @@
   "version": "0.0.1",
   "description": "Fullstack MERN app for a tour agency",
   "scripts": {
-    "dev:server": "pnpm --filter server run dev"
+    "dev:server": "pnpm --filter server dev",
+    "lint:server": "pnpm --filter server lint",
+    "lint:client": "pnpm --filter client lint",
+    "lint": "pnpm lint:server",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "sergiobarria",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "prettier": "^2.8.0",
+    "ts-standard": "^12.0.1"
+  },
+  "ts-standard": {
+    "project": "./tsconfig.json"
+  }
 }
