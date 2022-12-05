@@ -6,7 +6,11 @@ export const routes = {
 
   // Tours routes
   tours: '/tours',
-  tour: '/tours/:id'
+  tour: '/tours/:id',
+
+  // Users routes
+  users: '/users',
+  user: '/users/:id'
 
   // Auth routes
   // ...

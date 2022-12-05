@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 
 import { routes } from '@/shared/constants/routes'
 import { toursRouter } from '@/modules/tours'
+import { usersRouter } from '@/modules/users'
 
 const router = express.Router()
 
@@ -20,5 +21,12 @@ router.get(routes.healthcheck, (req: Request, res: Response) => {
  * @routes - GET, POST, PATCH, DELETE /api/v1/tours/:id
  */
 router.use(toursRouter)
+
+/**
+ * @description - API Users are
+ * @access - Public
+ * @routes - GET, POST, PATCH, DELETE /api/v1/users/:id
+ */
+router.use(usersRouter)
 
 export { router as apiRouter }
