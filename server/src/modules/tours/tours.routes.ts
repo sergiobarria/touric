@@ -9,7 +9,12 @@ import {
   deleteTour
 } from '@/modules/tours/tours.controller'
 import { validateResource } from '@/middleware/validateResource.middleware'
-import { createTourSchema, deleteTourSchema, updateTourSchema } from '@/modules/tours/tours.schema'
+import {
+  createTourSchema,
+  getTourSchema,
+  updateTourSchema,
+  deleteTourSchema
+} from '@/modules/tours/tours.schema'
 
 const router = express.Router()
 
@@ -17,7 +22,7 @@ router.route(routes.tours).get(getAllTours).post(validateResource(createTourSche
 
 router
   .route(routes.tour)
-  .get(getTour)
+  .get(validateResource(getTourSchema), getTour)
   .patch(validateResource(updateTourSchema), updateTour)
   .delete(validateResource(deleteTourSchema), deleteTour)
 

@@ -3,12 +3,8 @@ import * as path from 'path'
 
 import { Request, Response } from 'express'
 import httpStatus from 'http-status'
-import {
-  CreateTourInput,
-  DeleteTourInput,
-  GetTourInput,
-  UpdateTourInput
-} from '@/modules/tours/tours.schema'
+
+import { CreateTourInput, DeleteTourInput, GetTourInput, UpdateTourInput } from '@/modules/tours'
 
 const tours = JSON.parse(
   fs.readFileSync(path.join(__dirname, '/../../../dev-data/data/tours-simple.json'), 'utf-8')
@@ -38,23 +34,9 @@ export const createTour = (
   req: Request<{}, {}, CreateTourInput['body']>,
   res: Response
 ): Response => {
+  console.log(req.body)
   const newId = Number(tours[tours.length - 1].id) + 1
   const newTour = Object.assign({ id: newId }, req.body)
-
-  tours.push(newTour)
-
-  fs.writeFile(
-    path.join(__dirname, '/../../../dev-data/data/tours-simple.json'),
-    JSON.stringify(tours),
-    () => {
-      return res.status(httpStatus.CREATED).json({
-        status: 'success',
-        data: {
-          tour: newTour
-        }
-      })
-    }
-  )
 
   return res.status(httpStatus.CREATED).json({
     status: 'success',
@@ -74,7 +56,7 @@ export const getTour = (req: Request<GetTourInput['params']>, res: Response): Re
 
   const tour = tours.find((el: { id: number }) => el.id === Number(id))
 
-  if (tour !== undefined) {
+  if (tour === undefined) {
     return res.status(httpStatus.NOT_FOUND).json({
       status: 'fail',
       message: 'Invalid ID'
@@ -97,9 +79,7 @@ export const getTour = (req: Request<GetTourInput['params']>, res: Response): Re
 export const updateTour = (req: Request<UpdateTourInput['params']>, res: Response): Response => {
   const { id } = req.params
 
-  const tour = tours.find((el: { id: number }) => el.id === +id)
-
-  if (tour !== undefined) {
+  if (Number(id) > tours.length) {
     return res.status(httpStatus.NOT_FOUND).json({
       status: 'fail',
       message: 'Invalid ID'

@@ -2,12 +2,8 @@ import { z } from 'zod'
 
 const payload = {
   body: z.object({
-    name: z.string({
-      required_error: 'A tour must have a name'
-    }),
-    duration: z.number({
-      required_error: 'A tour must have a duration'
-    }),
+    name: z.string(),
+    duration: z.number(),
     difficulty: z.enum(['easy', 'medium', 'difficult'])
   })
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { AnyZodObject } from 'zod'
+import { AnyZodObject, ZodError } from 'zod'
 
 export const validateResource = (schema: AnyZodObject) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -12,6 +12,16 @@ export const validateResource = (schema: AnyZodObject) => {
 
       next()
     } catch (err: any) {
+      if (err instanceof ZodError) {
+        return res.status(400).json({
+          status: 'error',
+          message: {
+            type: 'Validation Error',
+            details: err.errors
+          }
+        })
+      }
+
       return res.status(400).json({
         message: err.errors[0].message
       })
