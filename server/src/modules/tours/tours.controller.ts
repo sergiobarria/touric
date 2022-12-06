@@ -30,7 +30,7 @@ export const getAllTours = async (req: Request, res: Response): Promise<Response
 }
 
 /**
- * @description - Create a new tour and save it to the tours colletion
+ * @description - Create a new tour and save it to the tours collection
  * @access - Public
  * @routes - POST /api/v1/tours
  * */

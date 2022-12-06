@@ -9,7 +9,9 @@
     "lint:client": "pnpm --filter client lint",
     "lint": "pnpm lint:server",
     "pre-commit": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "import-data": "pnpm --filter server seeder:import",
+    "delete-data": "pnpm --filter server seeder:delete"
   },
   "keywords": [],
   "author": "sergiobarria",
