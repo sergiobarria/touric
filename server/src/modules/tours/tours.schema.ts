@@ -3,8 +3,10 @@ import { z } from 'zod'
 const payload = {
   body: z.object({
     name: z.string(),
-    duration: z.number(),
-    difficulty: z.enum(['easy', 'medium', 'difficult'])
+    price: z.number().positive(),
+    rating: z.number().min(1).max(5)
+    // duration: z.number(),
+    // difficulty: z.enum(['easy', 'medium', 'difficult'])
   })
 }
 

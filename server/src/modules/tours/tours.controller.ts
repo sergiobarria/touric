@@ -1,28 +1,32 @@
-import * as fs from 'fs'
-import * as path from 'path'
-
 import { Request, Response } from 'express'
 import httpStatus from 'http-status'
+import { omit } from 'lodash'
 
+import { TourModel, tourPrivateFields } from '@/models'
 import { CreateTourInput, DeleteTourInput, GetTourInput, UpdateTourInput } from '@/modules/tours'
-
-const tours = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '/../../../dev-data/data/tours-simple.json'), 'utf-8')
-)
 
 /**
  * @description - Get all tours from the tours collection
  * @access - Public
  * @routes - GET /api/v1/tours
  * */
-export const getAllTours = (req: Request, res: Response): Response => {
-  return res.status(httpStatus.OK).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours
-    }
-  })
+export const getAllTours = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const tours = await TourModel.find()
+
+    return res.status(httpStatus.OK).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours
+      }
+    })
+  } catch (err: any) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      status: 'error',
+      message: err.message
+    })
+  }
 }
 
 /**
@@ -30,20 +34,25 @@ export const getAllTours = (req: Request, res: Response): Response => {
  * @access - Public
  * @routes - POST /api/v1/tours
  * */
-export const createTour = (
+export const createTour = async (
   req: Request<{}, {}, CreateTourInput['body']>,
   res: Response
-): Response => {
-  console.log(req.body)
-  const newId = Number(tours[tours.length - 1].id) + 1
-  const newTour = Object.assign({ id: newId }, req.body)
+): Promise<Response> => {
+  try {
+    const tour = await TourModel.create(req.body)
 
-  return res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      tour: newTour
-    }
-  })
+    return res.status(httpStatus.CREATED).json({
+      status: 'success',
+      data: {
+        tour: omit(tour.toJSON(), tourPrivateFields)
+      }
+    })
+  } catch (err: any) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      status: 'error',
+      message: err.message
+    })
+  }
 }
 
 /**
@@ -51,22 +60,18 @@ export const createTour = (
  * @access - Public
  * @routes - GET /api/v1/tours/:id
  * */
-export const getTour = (req: Request<GetTourInput['params']>, res: Response): Response => {
+export const getTour = async (
+  req: Request<GetTourInput['params']>,
+  res: Response
+): Promise<Response> => {
   const { id } = req.params
 
-  const tour = tours.find((el: { id: number }) => el.id === Number(id))
-
-  if (tour === undefined) {
-    return res.status(httpStatus.NOT_FOUND).json({
-      status: 'fail',
-      message: 'Invalid ID'
-    })
-  }
+  const tour = await TourModel.findById(id)
 
   return res.status(httpStatus.OK).json({
     status: 'success',
     data: {
-      tour
+      tour: omit(tour?.toJSON(), tourPrivateFields)
     }
   })
 }
@@ -76,20 +81,21 @@ export const getTour = (req: Request<GetTourInput['params']>, res: Response): Re
  * @access - Public
  * @routes - PATCH /api/v1/tours/:id
  * */
-export const updateTour = (req: Request<UpdateTourInput['params']>, res: Response): Response => {
+export const updateTour = async (
+  req: Request<UpdateTourInput['params']>,
+  res: Response
+): Promise<Response> => {
   const { id } = req.params
 
-  if (Number(id) > tours.length) {
-    return res.status(httpStatus.NOT_FOUND).json({
-      status: 'fail',
-      message: 'Invalid ID'
-    })
-  }
+  const tour = await TourModel.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true
+  })
 
   return res.status(httpStatus.OK).json({
     status: 'success',
     data: {
-      tour: '<Updated tour here...>'
+      tour: omit(tour?.toJSON(), tourPrivateFields)
     }
   })
 }
@@ -99,7 +105,14 @@ export const updateTour = (req: Request<UpdateTourInput['params']>, res: Respons
  * @access - Public
  * @routes - DELETE /api/v1/tours/:id
  * */
-export const deleteTour = (req: Request<DeleteTourInput['params']>, res: Response): Response => {
+export const deleteTour = async (
+  req: Request<DeleteTourInput['params']>,
+  res: Response
+): Promise<Response> => {
+  const { id } = req.params
+
+  await TourModel.findByIdAndDelete(id)
+
   return res.status(httpStatus.NO_CONTENT).json({
     status: 'success',
     data: null
