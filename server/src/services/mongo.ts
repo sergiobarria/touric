@@ -11,7 +11,7 @@ const MONGO_URI = process.env.MONGO_URI ?? ''
 export const mongoConnect = async (): Promise<void> => {
   try {
     await mongoose.connect(MONGO_URI)
-    logger.info(chalk.magentaBright.bold.underline(`Connected to MongoDB at ${MONGO_URI}`))
+    logger.info(chalk.blueBright.bold.underline(`Connected to MongoDB at ${MONGO_URI}`))
   } catch (err) {
     logger.error(chalk.red.bold.underline(`Error connecting to MongoDB at ${MONGO_URI}`))
     logger.error(err)

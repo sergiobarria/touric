@@ -48,30 +48,28 @@ const sendErrorDev = (err: any, req: any, res: any): Response<void> => {
 
 const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
   // A) API
-  if (req.originalUrl.startsWith('/api')) {
-    // Operational, trusted error: send message to client
+  if (req.originalUrl.startsWith('/api') === true) {
+    // Operational, trusted error: send a message to the client
     if (err.isOperational) {
       res.status(err.statusCode).json({
         status: err.status,
         message: err.message
       })
-      return
     }
 
     // Programming or other unknown error: don't leak error details
     // 1) Log error
     console.error('ERROR 💥', err)
 
-    // 2) Send generic message
+    // 2) Send a generic message
     res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!'
     })
-    return
   }
 
   // B) RENDERED WEBSITE
-  // Operational, trusted error: send message to client
+  // Operational, trusted error: send the message to the client
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
       title: 'Something went wrong!',
@@ -83,7 +81,7 @@ const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
   // 1) Log error
   console.error('ERROR 💥', err)
 
-  // 2) Send generic message
+  // 2) Send a generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
     msg: 'Please try again later.'

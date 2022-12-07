@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const payload = {
   body: z.object({
-    name: z.string().optional(),
+    name: z.string().min(10).max(40).optional(),
     duration: z.number().optional(),
     maxGroupSize: z.number().optional(),
     difficulty: z.enum(['easy', 'medium', 'difficult']).optional(),
