@@ -19,20 +19,18 @@ import { AppError } from '@/shared/utils/AppError'
  * @access - Public Middleware
  * @routes - GET /api/v1/tours/top-tours
  * */
-export const aliasTopTours = (
-  req: Request<{}, {}, {}, GetAllToursInput['query']>,
-  res: Response,
-  next: NextFunction
-): void => {
-  try {
+export const aliasTopTours = asyncHandler(
+  async (
+    req: Request<{}, {}, {}, GetAllToursInput['query']>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     req.query.limit = req.query?.limit ?? 3
     req.query.sort = '-ratingsAverage,price'
     req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
     next()
-  } catch (error) {
-    console.error(error)
   }
-}
+)
 
 /**
  * @description - Get all tours from the tours collection
@@ -64,11 +62,15 @@ export const getAllTours = asyncHandler(
  * @routes - POST /api/v1/tours
  * */
 export const createTour = asyncHandler(
-  async (req: Request<{}, {}, CreateTourInput['body']>, res: Response): Promise<void> => {
+  async (
+    req: Request<{}, {}, CreateTourInput['body']>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const tour = await TourModel.create(req.body)
 
-    if (tour === null) {
-      throw new AppError('Tour not created', httpStatus.BAD_REQUEST)
+    if (!tour) {
+      return next(new AppError('Tour not created', httpStatus.BAD_REQUEST))
     }
 
     res.status(httpStatus.CREATED).json({
@@ -86,10 +88,18 @@ export const createTour = asyncHandler(
  * @routes - GET /api/v1/tours/:id
  * */
 export const getTour = asyncHandler(
-  async (req: Request<GetTourInput['params']>, res: Response): Promise<void> => {
+  async (
+    req: Request<GetTourInput['params']>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const { id } = req.params
 
     const tour = await TourModel.findById(id)
+
+    if (!tour) {
+      return next(new AppError('Tour not found', httpStatus.NOT_FOUND))
+    }
 
     res.status(httpStatus.OK).json({
       status: 'success',
@@ -106,13 +116,21 @@ export const getTour = asyncHandler(
  * @routes - PATCH /api/v1/tours/:id
  * */
 export const updateTour = asyncHandler(
-  async (req: Request<UpdateTourInput['params']>, res: Response): Promise<void> => {
+  async (
+    req: Request<UpdateTourInput['params']>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const { id } = req.params
 
     const tour = await TourModel.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true
     })
+
+    if (!tour) {
+      return next(new AppError('Tour not found', httpStatus.NOT_FOUND))
+    }
 
     res.status(httpStatus.OK).json({
       status: 'success',
@@ -129,10 +147,18 @@ export const updateTour = asyncHandler(
  * @routes - DELETE /api/v1/tours/:id
  * */
 export const deleteTour = asyncHandler(
-  async (req: Request<DeleteTourInput['params']>, res: Response): Promise<void> => {
+  async (
+    req: Request<DeleteTourInput['params']>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const { id } = req.params
 
-    await TourModel.findByIdAndDelete(id)
+    const tour = await TourModel.findByIdAndDelete(id)
+
+    if (!tour) {
+      return next(new AppError('Tour not found', httpStatus.NOT_FOUND))
+    }
 
     res.status(httpStatus.NO_CONTENT).json({
       status: 'success',

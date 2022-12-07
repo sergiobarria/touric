@@ -2,34 +2,31 @@ import { Request, Response, NextFunction } from 'express'
 
 import { AppError } from '@/shared/utils/AppError'
 
-const handleCastErrorDB = (err: any): AppError => {
-  const message =
-    err !== undefined
-      ? `Invalid ${err.path as string}: ${err.value as string}`
-      : 'Invalid input data'
+const handleCastErrorDB = (err: any) => {
+  const message = `Invalid ${err.path}: ${err.value}`
   return new AppError(message, 400)
 }
 
-const handleDuplicateFieldsDB = (err: any): AppError => {
-  const value = err !== undefined ? err.message?.match(/(["'])(\\?.)*?\1/)[0] : ''
-  const message = `Duplicate field value: ${value as string}. Please use another value!`
+const handleDuplicateFieldsDB = (err: any) => {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]
+  const message = `Duplicate field value: ${value}. Please use another value!`
   return new AppError(message, 400)
 }
 
-const handleValidationErrorDB = (err: any): AppError => {
+const handleValidationErrorDB = (err: any) => {
   const errors = Object.values(err.errors).map((el: any) => el.message)
   const message = `Invalid input data. ${errors.join('. ')}`
   return new AppError(message, 400)
 }
 
-const handleJWTError = (): AppError => new AppError('Invalid token. Please log in again!', 401)
+const handleJWTError = () => new AppError('Invalid token. Please log in again!', 401)
 
-const handleJWTExpiredError = (): AppError =>
+const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401)
 
-const sendErrorDev = (err: any, req: any, res: any): Response<void> => {
+const sendErrorDev = (err: any, req: any, res: any) => {
   // A) API
-  if (req.originalUrl.startsWith('/api') === true) {
+  if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
       status: err.status,
       error: err,
@@ -46,12 +43,12 @@ const sendErrorDev = (err: any, req: any, res: any): Response<void> => {
   })
 }
 
-const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
+const sendErrorProd = (err: AppError, req: Request, res: Response) => {
   // A) API
-  if (req.originalUrl.startsWith('/api') === true) {
-    // Operational, trusted error: send a message to the client
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send message to client
     if (err.isOperational) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         status: err.status,
         message: err.message
       })
@@ -61,15 +58,15 @@ const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
     // 1) Log error
     console.error('ERROR 💥', err)
 
-    // 2) Send a generic message
-    res.status(500).json({
+    // 2) Send generic message
+    return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!'
     })
   }
 
   // B) RENDERED WEBSITE
-  // Operational, trusted error: send the message to the client
+  // Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
       title: 'Something went wrong!',
@@ -81,7 +78,7 @@ const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
   // 1) Log error
   console.error('ERROR 💥', err)
 
-  // 2) Send a generic message
+  // 2) Send generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
     msg: 'Please try again later.'
@@ -92,11 +89,11 @@ const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
 export const globalErrorHandler = (
   err: AppError,
   req: Request,
-  res: Response
-  // next: NextFunction
-): void => {
-  err.statusCode = err.statusCode !== undefined ? err.statusCode : 500
-  err.status = err.status !== '' ? err.status : 'error'
+  res: Response,
+  next: NextFunction
+) => {
+  err.statusCode = err.statusCode || 500
+  err.status = err.status || 'error'
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res)
@@ -114,7 +111,7 @@ export const globalErrorHandler = (
   }
 }
 
-export const notFound = (req: Request, res: Response, next: NextFunction): void => {
+export const notFound = (req: Request, res: Response, next: NextFunction) => {
   const error = new Error(`Not Found - ${req.originalUrl}`)
 
   res.status(404)
