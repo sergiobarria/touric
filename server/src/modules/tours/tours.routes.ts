@@ -6,7 +6,10 @@ import {
   createTour,
   getTour,
   updateTour,
-  deleteTour
+  deleteTour,
+  aliasTopTours,
+  getTourStats,
+  getMonthlyPlan
 } from '@/modules/tours/tours.controller'
 import { validateResource } from '@/middleware/validateResource.middleware'
 import {
@@ -17,6 +20,21 @@ import {
 } from '@/modules/tours/tours.schema'
 
 const router = express.Router()
+
+/**
+ * @description - Get top tours from the Tours collection by price
+ */
+router.route(routes.topTours).get(aliasTopTours, getAllTours)
+
+/**
+ * @description - Get tour stats
+ */
+router.route(routes.tourStats).get(getTourStats)
+
+/**
+ * @description - Get monthly plan
+ */
+router.route(routes.monthlyPlan).get(getMonthlyPlan)
 
 router.route(routes.tours).get(getAllTours).post(validateResource(createTourSchema), createTour)
 

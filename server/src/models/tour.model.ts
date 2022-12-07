@@ -2,7 +2,7 @@ import { Model, model, Schema } from 'mongoose'
 
 export const tourPrivateFields = ['__v']
 
-interface TourSchema {
+export interface TourSchema {
   name: string
   duration: number
   maxGroupSize: number
@@ -18,7 +18,7 @@ interface TourSchema {
   startDates: Date[]
 }
 
-interface TourMethods {
+export interface TourMethods {
   matchPassword: (password: string) => Promise<boolean>
 }
 

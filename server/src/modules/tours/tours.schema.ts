@@ -22,12 +22,23 @@ const params = {
   params: z.object({
     id: z.string({
       required_error: 'id is required'
-    })
+    }),
+    year: z.string().optional()
+  })
+}
+
+const query = {
+  query: z.object({
+    page: z.number().positive().optional(),
+    limit: z.number().positive().optional(),
+    sort: z.string().optional(),
+    fields: z.string().optional()
   })
 }
 
 export const getAllToursSchema = z.object({
-  ...payload
+  ...payload,
+  ...query
 })
 
 export const createTourSchema = z.object({
@@ -47,6 +58,7 @@ export const deleteTourSchema = z.object({
   ...params
 })
 
+export type GetAllToursInput = z.infer<typeof getAllToursSchema>
 export type CreateTourInput = z.infer<typeof createTourSchema>
 export type GetTourInput = z.infer<typeof getTourSchema>
 export type UpdateTourInput = z.infer<typeof updateTourSchema>

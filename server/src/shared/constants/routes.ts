@@ -7,6 +7,9 @@ export const routes = {
   // Tours routes
   tours: '/tours',
   tour: '/tours/:id',
+  topTours: '/tours/top-tours',
+  tourStats: '/tours/stats',
+  monthlyPlan: '/tours/monthly-plan/:year',
 
   // Users routes
   users: '/users',
