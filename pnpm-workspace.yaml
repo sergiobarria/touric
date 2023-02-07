@@ -1,3 +1,0 @@
-# pnpm workspace file configurations
-packages:
-  - 'server/**'
