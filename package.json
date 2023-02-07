@@ -2,34 +2,15 @@
   "name": "touric",
   "version": "0.0.1",
   "description": "Fullstack MERN app for a tour agency",
-  "scripts": {
-    "dev:server": "pnpm --filter server dev",
-    "prod:server": "pnpm --filter server start:prod",
-    "lint:server": "pnpm --filter server lint:fix",
-    "lint:client": "pnpm --filter client lint",
-    "lint": "pnpm lint:server",
-    "pre-commit": "lint-staged",
-    "prepare": "husky install",
-    "import-data": "pnpm --filter server seeder:import",
-    "delete-data": "pnpm --filter server seeder:delete"
-  },
-  "keywords": [],
+  "main": "index.js",
+  "repository": "git@github.com:sergiobarria/touric.git",
   "author": "sergiobarria",
-  "license": "ISC",
-  "devDependencies": {
-    "husky": "^8.0.2",
-    "lint-staged": "^13.1.0",
-    "prettier": "^2.8.0",
-    "ts-standard": "^12.0.1",
-    "tsc-files": "^1.1.3"
-  },
-  "ts-standard": {
-    "project": "./tsconfig.json"
-  },
-  "lint-staged": {
-    "**/*.{ts,tsx}": "tsc-files --noEmit",
-    "*.{js,ts,jsx,tsx}": [
-      "ts-standard --fix"
-    ]
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "dev:server": "cd server && yarn dev"
   }
 }
