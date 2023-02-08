@@ -2,14 +2,15 @@ import express from 'express';
 
 import { morganMiddleware } from './middleware/morgan.middleware';
 
+import { router } from './routes';
+
 const app = express();
 
 // Apply middlewares
 app.use(express.json());
 app.use(morganMiddleware);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+// Apply routes
+app.use('/api/v1', router);
 
 export { app };
