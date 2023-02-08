@@ -11,6 +11,8 @@
     "server"
   ],
   "scripts": {
-    "dev:server": "cd server && yarn dev"
+    "dev:server": "cd server && yarn dev",
+    "import-data": "cd server && yarn seeder:import",
+    "delete-data": "cd server && yarn seeder:delete"
   }
 }

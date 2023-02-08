@@ -4,7 +4,8 @@ import chalk from 'chalk';
 import * as dotenv from 'dotenv';
 
 import { app } from './app';
-import { logger } from '@/shared/utils/logger';
+import { logger } from './shared/utils/logger';
+import { mongoConnect } from './config/mongo';
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const startServer = async (): Promise<void> => {
   server = http.createServer(app);
+
+  // Connect to MongoDB
+  await mongoConnect();
 
   try {
     server.listen(PORT, () => {

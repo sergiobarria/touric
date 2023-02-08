@@ -10,12 +10,18 @@
     "dev": "tsnd -r tsconfig-paths/register --respawn --ignore-watch node_modules --transpile-only ./src/server.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint": "eslint --ext .ts,.tsx src/",
-    "lint:fix": "eslint --ext .ts,.tsx src/ --fix"
+    "lint:fix": "eslint --ext .ts,.tsx src/ --fix",
+    "seeder:import": "tsnd ./src/shared/utils/seeder.ts --import",
+    "seeder:delete": "tsnd ./src/shared/utils/seeder.ts --delete"
   },
   "dependencies": {
     "chalk": "4.1.2",
     "express": "^4.18.2",
-    "morgan": "^1.10.0"
+    "express-async-handler": "^1.2.0",
+    "http-status": "^1.6.2",
+    "mongoose": "^6.9.1",
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
