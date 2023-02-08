@@ -17,7 +17,7 @@ const startServer = async (): Promise<void> => {
   server = http.createServer(app);
 
   try {
-    server.listen(3000, () => {
+    server.listen(PORT, () => {
       logger.info(
         chalk.greenBright(
           `Server is running on port ${chalk.bold(PORT)} in ${chalk.bold(
