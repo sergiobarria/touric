@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { morganMiddleware } from './middleware/morgan.middleware';
+import { morganMiddleware, globalErrorHandler, notFound } from './middleware';
 
 import { router } from './routes';
 
@@ -12,5 +12,11 @@ app.use(morganMiddleware);
 
 // Apply routes
 app.use('/api/v1', router);
+
+// Not found route
+app.use(notFound);
+
+// Error Handling Middleware
+app.use(globalErrorHandler);
 
 export { app };

@@ -1,6 +1,8 @@
 import { model, Model, Schema } from 'mongoose';
 import slugify from 'slugify';
 
+export const privateFields = ['__v'];
+
 export interface TourSchema {
   name: string;
   duration: number;

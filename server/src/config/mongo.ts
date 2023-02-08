@@ -10,6 +10,7 @@ const MONGO_URI = process.env.MONGO_URI ?? '';
 
 export const mongoConnect = async (): Promise<void> => {
   try {
+    mongoose.set('strictQuery', false); // this will be the default in the next major release of mongoose v7
     await mongoose.connect(MONGO_URI);
     logger.info(
       chalk.blueBright.bold.underline(`Connected to MongoDB at ${MONGO_URI}`)
