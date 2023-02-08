@@ -14,10 +14,9 @@ module.exports = {
     [
       'module-resolver',
       {
+        root: ['./src/'],
         alias: {
-          '@config': './src/config',
-          '@controllers': './src/controllers',
-          '@routes': './src/routes',
+          '@': './src',
         },
       },
     ],
