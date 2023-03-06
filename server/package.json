@@ -22,7 +22,8 @@
     "express-async-handler": "^1.2.0",
     "http-status": "^1.6.2",
     "mongoose": "^7.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "zod": "^3.21.1"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
