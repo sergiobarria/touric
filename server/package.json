@@ -42,7 +42,8 @@
   "eslintConfig": {
     "ignorePatterns": [
       "node_modules/*",
-      "dist/*"
+      "dist/*",
+      "dev-data/*"
     ],
     "parserOptions": {
       "project": "./server/tsconfig.json"
