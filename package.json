@@ -1,0 +1,33 @@
+{
+  "name": "touric",
+  "version": "1.0.0",
+  "description": "Full-stack web application for a travel agency",
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "dev:docker": "docker compose up -d",
+    "dev:docker:build": "docker compose up --build",
+    "dev:server": "npm run dev --prefix server",
+    "build:server": "npm run build --prefix server",
+    "start:server": "npm run start --prefix server",
+    "typecheck:server": "npm run typecheck --prefix server",
+    "lint:server": "npm run lint --prefix server",
+    "lint": "npm run lint:server",
+    "lint-fix:server": "npm run lint:fix --prefix server",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2"
+  },
+  "lint-staged": {
+    "server/**/*.{js,ts}": [
+      "npm run lint-fix:server"
+    ]
+  }
+}
