@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 
-import { toursRouter } from './tours/tours.router'
+import { toursRouter } from './tours/tours.routes'
+import { usersRouter } from './users/users.routes'
 
 const apiRouter = express.Router()
 
@@ -18,5 +19,11 @@ apiRouter.get('/healthcheck', (_: Request, res: Response) => {
  * @endpoint: GET /api/v1/tours
  */
 apiRouter.use('/tours', toursRouter)
+
+/**
+ * @desc: Users routes
+ * @endpoint: GET /api/v1/users
+ */
+apiRouter.use('/users', usersRouter)
 
 export { apiRouter }

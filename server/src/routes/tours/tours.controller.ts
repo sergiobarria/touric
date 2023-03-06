@@ -16,6 +16,11 @@ const tours = JSON.parse(
   fs.readFileSync(path.join(__dirname, '../../../dev-data/data/tours-simple.json'), 'utf8')
 )
 
+/**
+ * @desc: Get all tours
+ * @endpoint: GET /api/v1/tours
+ * @access: Public
+ */
 export const getTours = asyncHandler(async (req: Request, res: Response) => {
   res.status(httpStatus.OK).json({
     status: 'success',
@@ -26,6 +31,11 @@ export const getTours = asyncHandler(async (req: Request, res: Response) => {
   })
 })
 
+/**
+ * @desc: Get tour
+ * @endpoint: GET /api/v1/tours/:id
+ * @access: Public
+ */
 export const getTour = asyncHandler(
   async (req: Request<GetTourType>, res: Response): Promise<any> => {
     const { id } = req.params
@@ -47,6 +57,11 @@ export const getTour = asyncHandler(
   }
 )
 
+/**
+ * @desc: Create tour
+ * @endpoint: POST /api/v1/tours
+ * @access: Public
+ */
 export const createTour = asyncHandler(
   async (req: Request<unknown, unknown, CreateTourInputType>, res: Response) => {
     const tourData = req.body
@@ -80,6 +95,11 @@ export const createTour = asyncHandler(
   }
 )
 
+/**
+ * @desc: Update tour
+ * @endpoint: PATCH /api/v1/tours/:id
+ * @access: Public
+ */
 export const updateTour = asyncHandler(
   async (req: Request<UpdateTourParamsType, unknown, UpdateTourBodyType>, res: Response) => {
     const { id } = req.params
@@ -97,6 +117,11 @@ export const updateTour = asyncHandler(
   }
 )
 
+/**
+ * @desc: Delete tour
+ * @endpoint: DELETE /api/v1/tours/:id
+ * @access: Public
+ */
 export const deleteTour = asyncHandler(
   async (req: Request<DeleteTourParamsType>, res: Response) => {
     const { id } = req.params
