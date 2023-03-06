@@ -1,35 +1,29 @@
-import * as http from 'http';
+import * as http from 'http'
 
-import chalk from 'chalk';
-import * as dotenv from 'dotenv';
+import chalk from 'chalk'
 
-import { app } from './app';
-import { logger } from '@/shared/utils/logger';
+import { app } from './app'
+import { logger } from './shared/utils/logger'
+// import { connectToMongoDB } from './shared/db/mongo'
 
-dotenv.config();
+const PORT = Number(process.env.PORT ?? 3000)
+const HOST = '0.0.0.0'
 
-let server: http.Server;
-
-const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+let server: http.Server
 
 const startServer = async (): Promise<void> => {
-  server = http.createServer(app);
+  server = http.createServer(app)
+
+  // Connect to MongoDB
+  // await connectToMongoDB() // TODO: Uncomment this line when you have MongoDB setup
 
   try {
-    server.listen(PORT, () => {
-      logger.info(
-        chalk.greenBright(
-          `Server is running on port ${chalk.bold(PORT)} in ${chalk.bold(
-            NODE_ENV
-          )} mode`
-        )
-      );
-    });
+    server.listen(PORT, HOST, () => {
+      logger.info(chalk.greenBright(`Server is running on http://${HOST}:${PORT}`))
+    })
   } catch (error) {
-    logger.error(error);
-    process.exit(1);
+    logger.error(chalk.redBright(error))
   }
-};
+}
 
-void startServer();
+void startServer()
