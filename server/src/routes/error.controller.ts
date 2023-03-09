@@ -1,7 +1,8 @@
-import { APIError } from '@/shared/utils/apiError'
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 
-export const globalErrorHandler = (err: APIError, _: Request, res: Response, next: NextFunction): void => {
+import { APIError } from '@/shared/utils/apiError'
+
+export const globalErrorHandler = (err: APIError, _: Request, res: Response): void => {
   err.statusCode = err.statusCode ?? 500
   err.status = err.status ?? 'error'
 
