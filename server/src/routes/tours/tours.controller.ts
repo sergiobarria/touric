@@ -10,10 +10,9 @@ import {
   UpdateTourBodyType,
   UpdateTourParamsType
 } from './tours.schemas'
-import { ITour, TourModel } from '@/models/tours.model'
+import { ITourDocument, TourModel } from '@/models/tours.model'
 
 import { APIFeatures } from '@/shared/features/apiFeatures'
-import { Document } from 'mongoose'
 
 /**
  * @desc: Get top 5 tours by ratings (middleware)
@@ -37,7 +36,7 @@ export const aliasTopTours = asyncHandler(
  */
 export const getTours = asyncHandler(
   async (req: Request<unknown, unknown, unknown, GetToursQueryType>, res: Response) => {
-    const features = new APIFeatures<ITour & Document>(TourModel.find(), req.query)
+    const features = new APIFeatures<ITourDocument>(TourModel.find(), req.query)
       .filter()
       .sort()
       .limitFields()

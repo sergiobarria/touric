@@ -1,11 +1,20 @@
 import { z } from 'zod'
 
 export const tourSchema = z.object({
-  name: z.string(),
+  name: z
+    .string({
+      required_error: 'A tour must have a name'
+    })
+    .min(10, {
+      message: 'A tour name must have more or equal then 10 characters'
+    })
+    .max(40, {
+      message: 'A tour name must have less or equal then 40 characters'
+    }),
   duration: z.number(),
   maxGroupSize: z.number(),
   difficulty: z.enum(['easy', 'medium', 'difficult']),
-  ratingsAverage: z.number(),
+  ratingsAverage: z.number().min(1).max(5),
   ratingsQuantity: z.number(),
   price: z.number(),
   summary: z.string(),
