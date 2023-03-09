@@ -4,7 +4,7 @@ import chalk from 'chalk'
 
 import { logger } from '@/shared/utils/logger'
 
-const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://0.0.0.0:27017'
+const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://0.0.0.0:27017/touric'
 
 export const connectToMongoDB = async (): Promise<void> => {
   try {

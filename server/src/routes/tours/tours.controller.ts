@@ -1,9 +1,7 @@
-import * as fs from 'fs'
-import * as path from 'path'
-
 import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import httpStatus from 'http-status'
+
 import {
   CreateTourInputType,
   DeleteTourParamsType,
@@ -11,10 +9,7 @@ import {
   UpdateTourBodyType,
   UpdateTourParamsType
 } from './tours.schemas'
-
-const tours = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../../../dev-data/data/tours-simple.json'), 'utf8')
-)
+import { TourModel } from '@/models/tours.model'
 
 /**
  * @desc: Get all tours
@@ -22,6 +17,8 @@ const tours = JSON.parse(
  * @access: Public
  */
 export const getTours = asyncHandler(async (req: Request, res: Response) => {
+  const tours = await TourModel.find().select('-__v')
+
   res.status(httpStatus.OK).json({
     status: 'success',
     count: tours.length,
@@ -39,12 +36,12 @@ export const getTours = asyncHandler(async (req: Request, res: Response) => {
 export const getTour = asyncHandler(
   async (req: Request<GetTourType>, res: Response): Promise<any> => {
     const { id } = req.params
-    const tour = tours.find((t: any) => t.id === parseInt(id, 10))
+    const tour = await TourModel.findById(id).select('-__v')
 
     if (tour === null) {
       return res.status(httpStatus.NOT_FOUND).json({
         status: 'fail',
-        message: 'Invalid ID'
+        message: 'Tour not found'
       })
     }
 
@@ -66,32 +63,12 @@ export const createTour = asyncHandler(
   async (req: Request<unknown, unknown, CreateTourInputType>, res: Response) => {
     const tourData = req.body
 
-    // eslint-disable-next-line
-    const newId = tours[tours.length - 1].id + 1
-    const newTour = { id: newId, ...tourData }
-    tours.push(newTour)
+    const newTour = await TourModel.create(tourData)
 
-    // NOTE: This is a hack to make the code work with the current implementation
-    // of the API. In the future, we will use a database to store the data.
-    fs.writeFile(
-      path.join(__dirname, '../../../dev-data/data/tours-simple.json'),
-      JSON.stringify(tours),
-      (err: any) => {
-        if (err !== null) {
-          return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            status: 'fail',
-            message: 'Error writing file'
-          })
-        }
-
-        return res.status(httpStatus.CREATED).json({
-          status: 'success',
-          data: {
-            tour: newTour
-          }
-        })
-      }
-    )
+    res.status(httpStatus.CREATED).json({
+      status: 'success',
+      data: { tour: newTour }
+    })
   }
 )
 
@@ -105,13 +82,15 @@ export const updateTour = asyncHandler(
     const { id } = req.params
     const tourData = req.body
 
-    res.status(httpStatus.NOT_IMPLEMENTED).json({
-      status: 'fail',
-      message: 'This route is not yet defined',
+    const updatedTour = await TourModel.findByIdAndUpdate(id, tourData, {
+      new: true,
+      runValidators: true
+    })
+
+    res.status(httpStatus.OK).json({
+      status: 'success',
       data: {
-        id,
-        tourData,
-        tour: '<Updated tour here...>'
+        tour: updatedTour
       }
     })
   }
@@ -126,13 +105,11 @@ export const deleteTour = asyncHandler(
   async (req: Request<DeleteTourParamsType>, res: Response) => {
     const { id } = req.params
 
-    res.status(httpStatus.NOT_IMPLEMENTED).json({
-      status: 'fail',
-      message: 'This route is not yet defined',
-      data: {
-        id,
-        tour: '<Deleted tour here...>'
-      }
+    await TourModel.findByIdAndDelete(id)
+
+    res.status(httpStatus.NO_CONTENT).json({
+      status: 'success',
+      data: null
     })
   }
 )

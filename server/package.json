@@ -9,7 +9,8 @@
     "start": "node dist/server.js NODE_ENV=production",
     "typecheck": "tsc --noEmit",
     "lint": "ts-standard",
-    "lint:fix": "ts-standard --fix"
+    "lint:fix": "ts-standard --fix",
+    "seed": "ts-node ./src/seed.ts --import"
   },
   "keywords": [],
   "author": "",

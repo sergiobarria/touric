@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { createTour, deleteTour, getTour, getTours, updateTour } from './tours.controller'
-import { validateResource } from '@/middleware/validateResource'
+import { validateResource } from '@/middleware/validateResource.middleware'
 import {
   createTourSchema,
   deleteTourSchema,

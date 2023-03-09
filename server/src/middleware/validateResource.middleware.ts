@@ -15,7 +15,8 @@ export const validateResource = (schema: AnyZodObject) => {
       if (error instanceof ZodError) {
         return res.status(400).json({
           status: 'fail',
-          message: error.flatten()
+          message: 'Invalid request data',
+          errors: error.flatten()
         })
       }
 
