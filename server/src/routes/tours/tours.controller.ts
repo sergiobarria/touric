@@ -134,3 +134,89 @@ export const deleteTour = asyncHandler(async (req: Request<DeleteTourParamsType>
     data: null
   })
 })
+
+/**
+ * @desc: Get tours stats
+ * @endpoint: GET /api/v1/tours/tour-stats
+ * @access: Public
+ * @note: This is an aggregation pipeline
+ */
+export const getTourStats = asyncHandler(async (req: Request, res: Response) => {
+  const stats = await TourModel.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } }
+    },
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        numTours: { $sum: 1 },
+        numRatings: { $sum: '$ratingsQuantity' },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        minPrice: { $min: '$price' },
+        maxPrice: { $max: '$price' }
+      }
+    },
+    {
+      $sort: { avgPrice: 1 }
+    }
+    // {
+    //   $match: { _id: { $ne: 'EASY' } }
+    // }
+  ])
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: { stats }
+  })
+})
+
+/**
+ * @desc: Get monthly plan
+ * @endpoint: GET /api/v1/tours/monthly-plan/:year
+ * @access: Public
+ * @note: This is an aggregation pipeline
+ * @note: This is a sample of how to use $unwind and $group
+ */
+export const getMonthlyPlan = asyncHandler(async (req: Request<{ year: string }>, res: Response) => {
+  const year = parseInt(req.params?.year, 10)
+
+  const plan = await TourModel.aggregate([
+    {
+      $unwind: '$startDates' // Unwind the array of startDates
+    },
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        numTourStarts: { $sum: 1 },
+        tours: { $push: '$name' }
+      }
+    },
+    {
+      $addFields: { month: '$_id' }
+    },
+    {
+      $project: { _id: 0 }
+    },
+    {
+      $sort: { numTourStarts: -1 }
+    },
+    {
+      $limit: 12
+    }
+  ])
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: plan.length,
+    data: { plan }
+  })
+})
