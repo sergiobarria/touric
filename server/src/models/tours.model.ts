@@ -1,6 +1,22 @@
-import * as mongoose from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 
-const tourSchema = new mongoose.Schema(
+export interface ITour {
+  name: string
+  duration: number
+  maxGroupSize: number
+  difficulty: string
+  ratingsAverage: number
+  ratingsQuantity: number
+  price: number
+  priceDiscount?: number
+  summary: string
+  description: string
+  imageCover: string
+  images: string[]
+  startDates: string[]
+}
+
+const tourSchema = new Schema<ITour & Document>(
   {
     name: {
       type: String,
@@ -64,4 +80,4 @@ const tourSchema = new mongoose.Schema(
   }
 )
 
-export const TourModel = mongoose.model('Tour', tourSchema)
+export const TourModel = model<ITour>('Tour', tourSchema)

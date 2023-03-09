@@ -1,6 +1,13 @@
 import express from 'express'
 
-import { createTour, deleteTour, getTour, getTours, updateTour } from './tours.controller'
+import {
+  aliasTopTours,
+  createTour,
+  deleteTour,
+  getTour,
+  getTours,
+  updateTour
+} from './tours.controller'
 import { validateResource } from '@/middleware/validateResource.middleware'
 import {
   createTourSchema,
@@ -10,6 +17,8 @@ import {
 } from './tours.schemas'
 
 const router = express.Router()
+
+router.route('/top-five-tours').get(aliasTopTours, getTours)
 
 router.route('/').get(getTours).post(validateResource(createTourSchema), createTour)
 
