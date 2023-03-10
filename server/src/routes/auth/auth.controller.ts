@@ -7,10 +7,15 @@ import { LoginInputType, SignupInputType } from './auth.schemas'
 import { APIError } from '@/shared/utils/apiError'
 import { signToken } from '@/shared/utils/signToken'
 
+/**
+ * @desc: Signup
+ * @endpoint: GET /api/v1/auth/signup
+ * @access: Public
+ */
 export const signup = asyncHandler(
   async (req: Request<unknown, unknown, SignupInputType>, res: Response, next: NextFunction) => {
-    const { name, email, password, passwordConfirm } = req.body
-    const newUser = await UserModel.create({ name, email, password, passwordConfirm })
+    const { name, email, password, passwordConfirm, role } = req.body
+    const newUser = await UserModel.create({ name, email, password, passwordConfirm, role })
 
     const token = signToken(newUser._id)
 
@@ -24,6 +29,11 @@ export const signup = asyncHandler(
   }
 )
 
+/**
+ * @desc: Login
+ * @endpoint: GET /api/v1/auth/login
+ * @access: Public
+ */
 export const login = asyncHandler(
   async (req: Request<unknown, unknown, LoginInputType>, res: Response, next: NextFunction) => {
     const { email, password } = req.body

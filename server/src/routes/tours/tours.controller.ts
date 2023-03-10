@@ -33,7 +33,7 @@ export const aliasTopTours = asyncHandler(
 /**
  * @desc: Get all tours
  * @endpoint: GET /api/v1/tours
- * @access: Public
+ * @access: Private
  */
 export const getTours = asyncHandler(async (req: Request<{}, {}, {}, GetToursQueryType>, res: Response) => {
   const features = new APIFeatures<ITourDocument>(TourModel.find(), req.query).filter().sort().limitFields().paginate()

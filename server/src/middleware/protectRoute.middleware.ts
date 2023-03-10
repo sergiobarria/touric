@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 
 import { APIError } from '@/shared/utils/apiError'
 import { UserModel } from '@/models/user.model'
+import { ValidatedUserType } from '@/routes/auth/auth.schemas'
 
 interface DecodedToken {
   id: string
@@ -13,22 +14,20 @@ interface DecodedToken {
   exp: number
 }
 
-interface User {
-  name: string
-  email: string
-  password: string
-}
-
 // NOTE: use this interface to extend the Request interface in the routes
-// that require authentication
+// that require authentication, add the current user to the request object
 export interface ValidatedUserRequest extends Request {
-  user?: User
+  user?: ValidatedUserType
 }
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
 const verifyToken = promisify(jwt.verify)
 
+/**
+ * @desc: Protect routes from unauthenticated users
+ * @endpoint: N/A (middleware)
+ */
 export const protectRoute = asyncHandler(async (req: ValidatedUserRequest, res: Response, next: NextFunction) => {
   let token: string | undefined
 

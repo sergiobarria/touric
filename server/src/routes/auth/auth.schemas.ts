@@ -11,6 +11,7 @@ export const userSchema = z
       })
       .email(),
     photo: z.string().optional(),
+    role: z.enum(['user', 'guide', 'lead-guide', 'admin']).optional().default('user'),
     password: z.string({
       required_error: 'Please provide a password'
     }),
@@ -22,6 +23,14 @@ export const userSchema = z
     message: 'Passwords are not the same!',
     path: ['passwordConfirm']
   })
+
+export const validatedUserSchema = z.object({
+  user: z.object({
+    name: z.string(),
+    email: z.string().email(),
+    role: z.enum(['user', 'guide', 'lead-guide', 'admin'])
+  })
+})
 
 export const signupSchema = z.object({
   body: userSchema
@@ -40,6 +49,7 @@ export const loginSchema = z.object({
   })
 })
 
+export type ValidatedUserType = z.infer<typeof validatedUserSchema>['user']
 export type UserType = z.infer<typeof userSchema>
 export type SignupInputType = z.infer<typeof signupSchema>['body']
 export type LoginInputType = z.infer<typeof loginSchema>['body']

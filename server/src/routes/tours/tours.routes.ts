@@ -13,6 +13,8 @@ import {
 import { validateResource } from '@/middleware/validateResource.middleware'
 import { createTourSchema, deleteTourSchema, getTourSchema, updateTourSchema } from './tours.schemas'
 import { protectRoute } from '@/middleware/protectRoute.middleware'
+import { restrictTo } from '@/middleware/restrictTo.middleware'
+import { Role } from '@/models/user.model'
 
 const router = express.Router()
 
@@ -26,6 +28,6 @@ router
   .route('/:id')
   .get(validateResource(getTourSchema), getTour)
   .patch(validateResource(updateTourSchema), updateTour)
-  .delete(validateResource(deleteTourSchema), deleteTour)
+  .delete(protectRoute, restrictTo(Role.ADMIN, Role.LEAD_GUIDE), validateResource(deleteTourSchema), deleteTour)
 
 export { router as toursRouter }

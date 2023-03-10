@@ -2,10 +2,18 @@ import { Schema, model, Document, Model, CallbackError } from 'mongoose'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 
+export enum Role {
+  ADMIN = 'admin',
+  LEAD_GUIDE = 'lead-guide',
+  GUIDE = 'guide',
+  USER = 'user'
+}
+
 export interface IUser {
   name: string
   email: string
   photo: string
+  role: 'admin' | 'lead-guide' | 'guide' | 'user'
   password: string
   passwordConfirm?: string
   passwordChangedAt?: Date
@@ -33,6 +41,11 @@ const userSchema = new Schema<IUser, UserModelType, IUserMethods>({
     validate: [validator.isEmail, 'Please provide a valid email']
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user'
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
