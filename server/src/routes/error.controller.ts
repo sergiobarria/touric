@@ -66,8 +66,8 @@ const sendErrorProd = (err: APIError, res: Response): void => {
 
 export const globalErrorHandler = (err: any, _: Request, res: Response, next: NextFunction): void => {
   let error = { ...err }
+  error.message = err.message
 
-  console.log('err', err)
   if (err instanceof MongooseError.CastError) {
     const { value } = err
     const errResponse = errorMap.CastError(value)
