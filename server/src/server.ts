@@ -1,10 +1,13 @@
 import * as http from 'http'
 
 import chalk from 'chalk'
+import dotenv from 'dotenv'
 
 import { app } from './app'
 import { logger } from './shared/utils/logger'
 import { connectToMongoDB } from './shared/db/mongo'
+
+dotenv.config({ path: '../../.env' })
 
 const PORT = Number(process.env.PORT ?? 3000)
 const HOST = '0.0.0.0'
@@ -54,9 +57,8 @@ startServer()
 
     // Gracefully shut down the server and exit the process if necessary
     process.on('SIGTERM', () => {
-      logger.info('Received SIGTERM signal')
       server.close(() => {
-        logger.info('Server shutdown complete')
+        logger.info('Received SIGTERM signal: Server shutdown complete')
         process.exit(0)
       })
     })

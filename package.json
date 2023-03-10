@@ -6,8 +6,8 @@
     "server"
   ],
   "scripts": {
-    "dev:docker": "docker compose up -d",
-    "dev:docker:build": "docker compose up --build",
+    "dev:docker": "docker compose up -d && docker compose logs -f --tail=100 server",
+    "dev:docker:build": "docker compose up --build -d && docker compose logs -f --tail=100 server",
     "dev:server": "npm run dev --prefix server",
     "build:server": "npm run build --prefix server",
     "start:server": "npm run start --prefix server",
