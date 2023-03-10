@@ -16,7 +16,7 @@ export interface IUser {
   email: string
   photo: string
   role: 'admin' | 'lead-guide' | 'guide' | 'user'
-  password: string
+  password?: string
   passwordConfirm?: string
   passwordChangedAt?: Date
   passwordResetToken?: string
@@ -83,7 +83,9 @@ userSchema.pre<IUserDocument>(/save/, async function (next: (error?: CallbackErr
   if (!this.isModified('password')) return next() // Only run this function if password was actually modified
 
   // Hash the password
-  this.password = await bcrypt.hash(this.password, 12)
+  if (this.password !== undefined) {
+    this.password = await bcrypt.hash(this.password, 12)
+  }
 
   // Delete passwordConfirm field
   this.passwordConfirm = undefined
