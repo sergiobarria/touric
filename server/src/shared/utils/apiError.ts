@@ -69,3 +69,21 @@ export class APIError extends Error {
     return new APIError(message, 'fail', httpStatus.INTERNAL_SERVER_ERROR)
   }
 }
+
+export class CastError extends APIError {
+  constructor(message: string) {
+    super(message, 'error', httpStatus.BAD_REQUEST)
+  }
+}
+
+export class DuplicatedKeyError extends APIError {
+  constructor(message: string) {
+    super(message, 'error', httpStatus.CONFLICT)
+  }
+}
+
+export class ValidationError extends APIError {
+  constructor(message: string) {
+    super(message, 'error', httpStatus.BAD_REQUEST)
+  }
+}

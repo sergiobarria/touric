@@ -13,6 +13,7 @@ import {
 import { ITourDocument, TourModel } from '@/models/tours.model'
 
 import { APIFeatures } from '@/shared/features/apiFeatures'
+import { APIError } from '@/shared/utils/apiError'
 
 /**
  * @desc: Get top 5 tours by ratings (middleware)
@@ -59,24 +60,23 @@ export const getTours = asyncHandler(
  * @endpoint: GET /api/v1/tours/:id
  * @access: Public
  */
-export const getTour = asyncHandler(async (req: Request<GetTourParamsType>, res: Response): Promise<any> => {
-  const { id } = req.params
-  const tour = await TourModel.findById(id).select('-__v')
+export const getTour = asyncHandler(
+  async (req: Request<GetTourParamsType>, res: Response, next: NextFunction): Promise<any> => {
+    const { id } = req.params
+    const tour = await TourModel.findById(id).select('-__v')
 
-  if (tour === null) {
-    return res.status(httpStatus.NOT_FOUND).json({
-      status: 'fail',
-      message: 'Tour not found'
+    if (tour === null) {
+      return next(APIError.notFound(`Tour with id ${id} not found`))
+    }
+
+    return res.status(httpStatus.OK).json({
+      status: 'success',
+      data: {
+        tour
+      }
     })
   }
-
-  return res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      tour
-    }
-  })
-})
+)
 
 /**
  * @desc: Create tour
@@ -100,7 +100,7 @@ export const createTour = asyncHandler(async (req: Request<unknown, unknown, Cre
  * @access: Public
  */
 export const updateTour = asyncHandler(
-  async (req: Request<UpdateTourParamsType, unknown, UpdateTourBodyType>, res: Response) => {
+  async (req: Request<UpdateTourParamsType, unknown, UpdateTourBodyType>, res: Response, next: NextFunction) => {
     const { id } = req.params
     const tourData = req.body
 
@@ -108,6 +108,10 @@ export const updateTour = asyncHandler(
       new: true,
       runValidators: true
     })
+
+    if (updatedTour === null) {
+      return next(APIError.notFound(`Tour with id ${id} not found`))
+    }
 
     res.status(httpStatus.OK).json({
       status: 'success',
@@ -123,16 +127,22 @@ export const updateTour = asyncHandler(
  * @endpoint: DELETE /api/v1/tours/:id
  * @access: Public
  */
-export const deleteTour = asyncHandler(async (req: Request<DeleteTourParamsType>, res: Response) => {
-  const { id } = req.params
+export const deleteTour = asyncHandler(
+  async (req: Request<DeleteTourParamsType>, res: Response, next: NextFunction) => {
+    const { id } = req.params
 
-  await TourModel.findByIdAndDelete(id)
+    const tour = await TourModel.findByIdAndDelete(id)
 
-  res.status(httpStatus.NO_CONTENT).json({
-    status: 'success',
-    data: null
-  })
-})
+    if (tour === null) {
+      return next(APIError.notFound(`Tour with id ${id} not found`))
+    }
+
+    res.status(httpStatus.NO_CONTENT).json({
+      status: 'success',
+      data: null
+    })
+  }
+)
 
 /**
  * @desc: Get tours stats
