@@ -1,8 +1,11 @@
+import { Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { ObjectId } from 'bson'
 
-const JWT_SECRET = process.env.JWT_SECRET as string
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN as string
+import { IUserDocument } from '@/models/user.model'
+import { config } from '@/config'
+
+const { JWT_SECRET, JWT_EXPIRES_IN } = config
 
 export const signToken = (id: string | ObjectId): string => {
   // Convert ObjectId to string
@@ -12,5 +15,17 @@ export const signToken = (id: string | ObjectId): string => {
 
   return jwt.sign({ id }, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN
+  })
+}
+
+export const createAndSendToken = (user: IUserDocument, statusCode: number, res: Response): void => {
+  const token = signToken(user._id)
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user
+    }
   })
 }

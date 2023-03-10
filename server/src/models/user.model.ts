@@ -29,7 +29,7 @@ export interface IUserMethods {
   createPasswordResetToken: () => string
 }
 
-type UserModelType = Model<IUser, {}, IUserMethods>
+export type UserModelType = Model<IUser, {}, IUserMethods>
 
 export interface IUserDocument extends IUser, Document {}
 

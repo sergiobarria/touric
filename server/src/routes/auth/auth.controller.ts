@@ -10,12 +10,14 @@ import {
   LoginInputType,
   ResetPasswordInputType,
   ResetPasswordParamsType,
-  SignupInputType
+  SignupInputType,
+  UpdatePasswordInputType
 } from './auth.schemas'
 import { APIError } from '@/shared/utils/apiError'
-import { signToken } from '@/shared/utils/signToken'
+import { createAndSendToken } from '@/shared/utils/signToken'
 import { config } from '@/config'
 import { sendEmail } from '@/shared/utils/emailSender'
+import { AuthenticatedRequest } from '@/middleware/protectRoute.middleware'
 
 const { API_VERSION, HOST } = config
 
@@ -29,15 +31,7 @@ export const signup = asyncHandler(
     const { name, email, password, passwordConfirm, role } = req.body
     const newUser = await UserModel.create({ name, email, password, passwordConfirm, role })
 
-    const token = signToken(newUser._id)
-
-    res.status(httpStatus.CREATED).json({
-      status: 'success',
-      token,
-      data: {
-        user: newUser
-      }
-    })
+    createAndSendToken(newUser, httpStatus.CREATED, res)
   }
 )
 
@@ -64,12 +58,7 @@ export const login = asyncHandler(
 
     // 3) If everything ok, send token to client
     // At this point, we know that the user exists and the password is correct
-    const token = signToken(user._id)
-
-    res.status(httpStatus.OK).json({
-      status: 'success',
-      token
-    })
+    createAndSendToken(user, httpStatus.OK, res)
   }
 )
 
@@ -142,14 +131,36 @@ export const resetPassword = asyncHandler(
     user.passwordResetExpires = undefined
     await user.save()
 
-    // 3) Update changedPasswordAt property for the user
+    // 3) Log the user in, send JWT
+    createAndSendToken(user, httpStatus.OK, res)
+  }
+)
 
-    // 4) Log the user in, send JWT
-    const token = signToken(user._id)
+/**
+ * @desc: Update password
+ * @endpoint: GET /api/v1/auth/update-password
+ * @access: Private
+ */
+export const updatePassword = asyncHandler(
+  async (req: AuthenticatedRequest<UpdatePasswordInputType>, res: Response, next: NextFunction) => {
+    // 1) Get user from collection
+    const user = await UserModel.findById(req.user?.id).select('+password')
 
-    res.status(httpStatus.OK).json({
-      status: 'success',
-      token
-    })
+    if (user === null) {
+      return next(APIError.notFound('User not found'))
+    }
+
+    // 2) Check if posted current password is correct
+    if (!((await user?.comparePasswords(req.body.passwordCurrent, user.password)) ?? false)) {
+      return next(APIError.unauthorized('Your current password is wrong'))
+    }
+
+    // 3) If so, update password
+    user.password = req.body.password
+    user.passwordConfirm = req.body.passwordConfirm
+    await user.save()
+
+    // 4) Log user in, send JWT
+    createAndSendToken(user, httpStatus.OK, res)
   }
 )
