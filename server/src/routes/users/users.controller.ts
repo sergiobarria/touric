@@ -63,7 +63,7 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response, next:
 
 /**
  * @desc: Update me
- * @endpoint: DELETE /api/v1/users/update-me
+ * @endpoint: PATCH /api/v1/users/update-me
  * @access: Private
  */
 export const updateMe = asyncHandler(
@@ -90,3 +90,17 @@ export const updateMe = asyncHandler(
     })
   }
 )
+
+/**
+ * @desc: Delete me
+ * @endpoint: DELETE /api/v1/users/delete-me
+ * @access: Private
+ */
+export const deleteMe = asyncHandler(async (req: AuthenticatedRequest<unknown>, res: Response, next: NextFunction) => {
+  await UserModel.findByIdAndUpdate(req.user?.id, { active: false })
+
+  res.status(httpStatus.NO_CONTENT).json({
+    status: 'success',
+    data: null
+  })
+})

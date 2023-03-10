@@ -21,6 +21,7 @@ export interface IUser {
   passwordChangedAt?: Date
   passwordResetToken?: string
   passwordResetExpires?: number
+  active?: boolean
 }
 
 export interface IUserMethods {
@@ -69,7 +70,12 @@ const userSchema = new Schema<IUser, UserModelType, IUserMethods>({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Number
+  passwordResetExpires: Number,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  }
 })
 
 // Password encryption
@@ -123,5 +129,13 @@ userSchema.methods.createPasswordResetToken = function (this: IUserDocument) {
 
   return resetToken
 }
+
+// Query middleware to exclude inactive users
+userSchema.pre<IUserDocument>(/^find/, function (this: any, next: (error?: CallbackError) => void) {
+  // this points to the current query
+  this.find({ active: { $ne: false } })
+
+  next()
+})
 
 export const UserModel = model<IUser, UserModelType>('User', userSchema)
