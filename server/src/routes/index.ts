@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import { authRouter } from './auth/auth.routes'
 
 import { toursRouter } from './tours/tours.routes'
 import { usersRouter } from './users/users.routes'
@@ -25,5 +26,11 @@ apiRouter.use('/tours', toursRouter)
  * @endpoint: GET /api/v1/users
  */
 apiRouter.use('/users', usersRouter)
+
+/**
+ * @desc: Auth routes
+ * @endpoint: GET /api/v1/
+ */
+apiRouter.use('/auth', authRouter)
 
 export { apiRouter }

@@ -1,3 +1,4 @@
+import { UserModel } from '@/models/user.model'
 import { Request, Response, NextFunction } from 'express'
 import asyncHandler from 'express-async-handler'
 import httpStatus from 'http-status'
@@ -8,7 +9,15 @@ import httpStatus from 'http-status'
  * @access: Public
  */
 export const getUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  res.status(httpStatus.OK).json({ status: 'fail route not implemented', message: 'getUsers' })
+  const users = await UserModel.find()
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: users.length,
+    data: {
+      users
+    }
+  })
 })
 
 /**
@@ -26,9 +35,7 @@ export const getUser = asyncHandler(async (req: Request, res: Response, next: Ne
  * @access: Public
  */
 export const createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  res
-    .status(httpStatus.CREATED)
-    .json({ status: 'fail route not implemented', message: 'createUser' })
+  res.status(httpStatus.CREATED).json({ status: 'fail route not implemented', message: 'createUser' })
 })
 
 /**

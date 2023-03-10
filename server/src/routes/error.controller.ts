@@ -79,6 +79,14 @@ export const globalErrorHandler = (err: any, _: Request, res: Response, next: Ne
   } else if (err instanceof MongooseError.ValidationError) {
     error = { ...error, ...errorMap.ValidationError }
     error.message = Object.values(err.errors).map((el: any) => el.message)
+  } else if (err.name === 'JsonWebTokenError') {
+    error = { ...error, ...errorMap.default }
+    error.message = 'Invalid token. Please log in again!'
+    error.statusCode = httpStatus.UNAUTHORIZED
+  } else if (err.name === 'TokenExpiredError') {
+    error = { ...error, ...errorMap.default }
+    error.message = 'Your token has expired! Please log in again.'
+    error.statusCode = httpStatus.UNAUTHORIZED
   } else {
     error = { ...error, ...errorMap.default }
   }

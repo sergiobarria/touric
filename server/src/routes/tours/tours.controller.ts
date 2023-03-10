@@ -21,7 +21,7 @@ import { APIError } from '@/shared/utils/apiError'
  * @access: Public
  */
 export const aliasTopTours = asyncHandler(
-  async (req: Request<unknown, unknown, unknown, GetToursQueryType>, _: Response, next: NextFunction) => {
+  async (req: Request<{}, {}, {}, GetToursQueryType>, _: Response, next: NextFunction) => {
     req.query.limit = '5'
     req.query.sort = '-ratingsAverage,price'
     req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
@@ -35,25 +35,19 @@ export const aliasTopTours = asyncHandler(
  * @endpoint: GET /api/v1/tours
  * @access: Public
  */
-export const getTours = asyncHandler(
-  async (req: Request<unknown, unknown, unknown, GetToursQueryType>, res: Response) => {
-    const features = new APIFeatures<ITourDocument>(TourModel.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate()
+export const getTours = asyncHandler(async (req: Request<{}, {}, {}, GetToursQueryType>, res: Response) => {
+  const features = new APIFeatures<ITourDocument>(TourModel.find(), req.query).filter().sort().limitFields().paginate()
 
-    const tours = await features.query
+  const tours = await features.query
 
-    res.status(httpStatus.OK).json({
-      status: 'success',
-      count: tours.length,
-      data: {
-        tours
-      }
-    })
-  }
-)
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    count: tours.length,
+    data: {
+      tours
+    }
+  })
+})
 
 /**
  * @desc: Get tour
@@ -83,7 +77,7 @@ export const getTour = asyncHandler(
  * @endpoint: POST /api/v1/tours
  * @access: Public
  */
-export const createTour = asyncHandler(async (req: Request<unknown, unknown, CreateTourInputType>, res: Response) => {
+export const createTour = asyncHandler(async (req: Request<{}, {}, CreateTourInputType>, res: Response) => {
   const tourData = req.body
 
   const newTour = await TourModel.create(tourData)
@@ -100,7 +94,7 @@ export const createTour = asyncHandler(async (req: Request<unknown, unknown, Cre
  * @access: Public
  */
 export const updateTour = asyncHandler(
-  async (req: Request<UpdateTourParamsType, unknown, UpdateTourBodyType>, res: Response, next: NextFunction) => {
+  async (req: Request<UpdateTourParamsType, {}, UpdateTourBodyType>, res: Response, next: NextFunction) => {
     const { id } = req.params
     const tourData = req.body
 
@@ -150,7 +144,7 @@ export const deleteTour = asyncHandler(
  * @access: Public
  * @note: This is an aggregation pipeline
  */
-export const getTourStats = asyncHandler(async (req: Request, res: Response) => {
+export const getTourStats = asyncHandler(async (_: Request, res: Response) => {
   const stats = await TourModel.aggregate([
     {
       $match: { ratingsAverage: { $gte: 4.5 } }

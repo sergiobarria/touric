@@ -12,6 +12,7 @@ import {
 } from './tours.controller'
 import { validateResource } from '@/middleware/validateResource.middleware'
 import { createTourSchema, deleteTourSchema, getTourSchema, updateTourSchema } from './tours.schemas'
+import { protectRoute } from '@/middleware/protectRoute.middleware'
 
 const router = express.Router()
 
@@ -19,7 +20,7 @@ router.route('/top-five-tours').get(aliasTopTours, getTours)
 router.route('/tour-stats').get(getTourStats)
 router.route('/monthly-plan/:year').get(getMonthlyPlan)
 
-router.route('/').get(getTours).post(validateResource(createTourSchema), createTour)
+router.route('/').get(protectRoute, getTours).post(validateResource(createTourSchema), createTour)
 
 router
   .route('/:id')
