@@ -77,7 +77,8 @@ export const globalErrorHandler = (err: any, _: Request, res: Response, next: Ne
     const errResponse = errorMap.MongoServerError(fieldName)
     error = { ...error, ...errResponse }
   } else if (err instanceof MongooseError.ValidationError) {
-    error = { ...error, ...errorMap.ValidationError }
+    const errResponse = errorMap.ValidationError()
+    error = { ...error, ...errResponse }
     error.message = Object.values(err.errors).map((el: any) => el.message)
   } else if (err.name === 'JsonWebTokenError') {
     error = { ...error, ...errorMap.default }
