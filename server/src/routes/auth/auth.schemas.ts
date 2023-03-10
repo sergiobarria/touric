@@ -49,7 +49,34 @@ export const loginSchema = z.object({
   })
 })
 
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z
+      .string({
+        required_error: 'Please provide your email'
+      })
+      .email()
+  })
+})
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    password: z.string({
+      required_error: 'Please provide a password'
+    }),
+    passwordConfirm: z.string({
+      required_error: 'Please confirm your password'
+    })
+  }),
+  params: z.object({
+    token: z.string()
+  })
+})
+
 export type ValidatedUserType = z.infer<typeof validatedUserSchema>['user']
 export type UserType = z.infer<typeof userSchema>
 export type SignupInputType = z.infer<typeof signupSchema>['body']
 export type LoginInputType = z.infer<typeof loginSchema>['body']
+export type ForgotPasswordInputType = z.infer<typeof forgotPasswordSchema>['body']
+export type ResetPasswordInputType = z.infer<typeof resetPasswordSchema>['body']
+export type ResetPasswordParamsType = z.infer<typeof resetPasswordSchema>['params']

@@ -1,3 +1,5 @@
+import * as crypto from 'crypto'
+
 import { Schema, model, Document, Model, CallbackError } from 'mongoose'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
@@ -17,11 +19,14 @@ export interface IUser {
   password: string
   passwordConfirm?: string
   passwordChangedAt?: Date
+  passwordResetToken?: string
+  passwordResetExpires?: number
 }
 
 export interface IUserMethods {
   comparePasswords: (candidatePassword: string, userPassword: string) => Promise<boolean>
   changedPasswordAfter: (JWTTimestamp: number) => boolean
+  createPasswordResetToken: () => string
 }
 
 type UserModelType = Model<IUser, {}, IUserMethods>
@@ -62,7 +67,9 @@ const userSchema = new Schema<IUser, UserModelType, IUserMethods>({
       }
     }
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Number
 })
 
 // Password encryption
@@ -74,6 +81,15 @@ userSchema.pre<IUserDocument>(/save/, async function (next: (error?: CallbackErr
 
   // Delete passwordConfirm field
   this.passwordConfirm = undefined
+
+  next()
+})
+
+// Password changed at property
+userSchema.pre<IUserDocument>(/save/, function (this: IUserDocument, next: (error?: CallbackError) => void) {
+  if (!this.isModified('password') || this.isNew) return next()
+
+  this.passwordChangedAt = new Date(Date.now() - 1000) // Subtract 1 second to make sure the token is issued after the password was changed
 
   next()
 })
@@ -95,6 +111,17 @@ userSchema.methods.changedPasswordAfter = function (this: IUserDocument, JWTTime
 
   // False means NOT changed
   return false
+}
+
+// Create password reset token
+userSchema.methods.createPasswordResetToken = function (this: IUserDocument) {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000 // 10 minutes
+
+  return resetToken
 }
 
 export const UserModel = model<IUser, UserModelType>('User', userSchema)
