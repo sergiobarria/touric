@@ -5,6 +5,13 @@ services:
     image: mongo
     container_name: touric_mongodb
     restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+        compress: 'true'
+        labels: 'mongo'
     ports:
       - 27017:27017
     volumes:
@@ -18,14 +25,27 @@ services:
       target: development
     ports:
       - 3000:3000
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+        compress: 'true'
+        labels: 'express-server'
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run dev
     environment:
-      - NODE_ENV=development
-      - PORT=3000
-      - MONGO_URI=mongodb://mongodb:27017/touric
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - mongodb
 

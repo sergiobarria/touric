@@ -66,8 +66,8 @@ const sendErrorProd = (err: APIError, res: Response): void => {
 
 export const globalErrorHandler = (err: any, _: Request, res: Response, next: NextFunction): void => {
   let error = { ...err }
+  error.message = err.message
 
-  console.log('err', err)
   if (err instanceof MongooseError.CastError) {
     const { value } = err
     const errResponse = errorMap.CastError(value)
@@ -77,8 +77,17 @@ export const globalErrorHandler = (err: any, _: Request, res: Response, next: Ne
     const errResponse = errorMap.MongoServerError(fieldName)
     error = { ...error, ...errResponse }
   } else if (err instanceof MongooseError.ValidationError) {
-    error = { ...error, ...errorMap.ValidationError }
+    const errResponse = errorMap.ValidationError()
+    error = { ...error, ...errResponse }
     error.message = Object.values(err.errors).map((el: any) => el.message)
+  } else if (err.name === 'JsonWebTokenError') {
+    error = { ...error, ...errorMap.default }
+    error.message = 'Invalid token. Please log in again!'
+    error.statusCode = httpStatus.UNAUTHORIZED
+  } else if (err.name === 'TokenExpiredError') {
+    error = { ...error, ...errorMap.default }
+    error.message = 'Your token has expired! Please log in again.'
+    error.statusCode = httpStatus.UNAUTHORIZED
   } else {
     error = { ...error, ...errorMap.default }
   }
