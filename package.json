@@ -1,0 +1,12 @@
+{
+  "name": "touric",
+  "version": "1.0.0",
+  "description": "Full-stack web application for a travel agency",
+  "repository": "git@github.com:sergiobarria/touric.git",
+  "author": "sergiobarria <email@gmail.com>",
+  "license": "MIT",
+  "workspaces": [
+    "server/"
+  ],
+  "scripts": {}
+}
