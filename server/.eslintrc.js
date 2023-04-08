@@ -6,9 +6,10 @@ module.exports = {
     extends: ['standard-with-typescript', 'eslint-config-prettier'],
     overrides: [],
     parserOptions: {
-        project: './server/tsconfig.json',
+        project: './tsconfig.json',
         ecmaVersion: 'latest',
-        sourceType: 'module'
+        sourceType: 'module',
+        tsconfigRootDir: __dirname
     },
     rules: {
         '@typescript-eslint/restrict-template-expressions': 'off',

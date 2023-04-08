@@ -18,7 +18,7 @@
         "start": "yarn start:server",
         "lint:server": "yarn --cwd server lint",
         "lint": "yarn lint:server",
-        "typecheck:server": "yarn --cwd server typecheck",
+        "typecheck:server": "tsc --noEmit --project server/tsconfig.json",
         "typecheck": "yarn typecheck:server",
         "format:server": "yarn --cwd server format",
         "format": "yarn format:server",
@@ -31,10 +31,9 @@
         "lint-staged": "^13.2.1"
     },
     "lint-staged": {
-        "*.{ts,tsx}": [
-            "yarn format",
+        "server/**/*.{ts,tsx}": [
             "yarn lint",
-            "yarn typecheck"
+            "yarn format"
         ]
     }
 }
