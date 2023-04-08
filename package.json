@@ -1,12 +1,40 @@
 {
-  "name": "touric",
-  "version": "1.0.0",
-  "description": "Full-stack web application for a travel agency",
-  "repository": "git@github.com:sergiobarria/touric.git",
-  "author": "sergiobarria <email@gmail.com>",
-  "license": "MIT",
-  "workspaces": [
-    "server/"
-  ],
-  "scripts": {}
+    "name": "touric",
+    "version": "1.0.0",
+    "description": "Full-stack web application for a travel agency",
+    "repository": "git@github.com:sergiobarria/touric.git",
+    "author": "sergiobarria <email@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "server/"
+    ],
+    "scripts": {
+        "dev:server": "yarn --cwd server dev",
+        "dev": "concurrently \"yarn dev:server\"",
+        "build:server": "yarn --cwd server build",
+        "build": "yarn build:server",
+        "start:server": "yarn --cwd server start",
+        "start": "yarn start:server",
+        "lint:server": "yarn --cwd server lint",
+        "lint": "yarn lint:server",
+        "typecheck:server": "yarn --cwd server typecheck",
+        "typecheck": "yarn typecheck:server",
+        "format:server": "yarn --cwd server format",
+        "format": "yarn format:server",
+        "lint-staged": "lint-staged",
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.0.1",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.1"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "yarn format",
+            "yarn lint",
+            "yarn typecheck"
+        ]
+    }
 }
