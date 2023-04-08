@@ -14,3 +14,6 @@ logs/
 .env.test
 .env.production
 
+# other
+_old/
+
