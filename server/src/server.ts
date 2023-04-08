@@ -5,6 +5,7 @@ import chalk from 'chalk'
 
 import { app } from './app'
 import { logger } from './utils'
+import { prisma } from './lib'
 
 let server: http.Server
 
@@ -13,6 +14,11 @@ const env = config.get<string>('NODE_ENV')
 
 async function main(): Promise<void> {
     server = http.createServer(app)
+
+    // connect to database
+    await prisma.$connect().finally(() => {
+        logger.info(chalk.greenBright.bold.underline('⇨ 💾 Connected to mongodb database'))
+    })
 
     try {
         server.listen(port, () => {
@@ -23,5 +29,16 @@ async function main(): Promise<void> {
         process.exit(1)
     }
 }
+
+function shutdown(): void {
+    logger.info(chalk.magentaBright.bold.underline('⇨ 🔴 Shutting down server...'))
+    void server.close()
+    prisma.$disconnect().finally(() => {
+        process.exit(0)
+    })
+}
+
+process.on('SIGTERM', shutdown)
+process.on('SIGINT', shutdown)
 
 void main()
