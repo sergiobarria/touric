@@ -1,69 +1,27 @@
 import * as http from 'http'
 
+import config from 'config'
 import chalk from 'chalk'
-import dotenv from 'dotenv'
 
 import { app } from './app'
-import { logger } from './shared/utils/logger'
-import { connectToMongoDB } from './shared/db/mongo'
-
-dotenv.config({ path: '../../.env' })
-
-const PORT = Number(process.env.PORT ?? 3000)
-const HOST = '0.0.0.0'
+import { logger } from './utils'
 
 let server: http.Server
 
-// Handle uncaught exceptions globally
-process.on('uncaughtException', err => {
-  logger.error('Uncaught exception:', err)
-  process.exit(1)
-})
+const port = config.get<string>('PORT')
+const env = config.get<string>('NODE_ENV')
 
-// Handle unhandled promise rejections globally
-process.on('unhandledRejection', err => {
-  logger.error('Unhandled rejection:', err)
-  process.exit(1)
-})
+async function main(): Promise<void> {
+    server = http.createServer(app)
 
-const startServer = async (): Promise<http.Server> => {
-  server = http.createServer(app)
-
-  // Connect to MongoDB
-  await connectToMongoDB()
-
-  // Listen on port
-  server.listen(PORT, HOST, () => {
-    logger.info(chalk.bgCyanBright(`Server listening on port ${PORT}`))
-  })
-
-  // Handle server errors
-  server.on('error', err => {
-    console.error('Server error:', err)
-    server.close(() => {
-      process.exit(1)
-    })
-  })
-
-  return server
+    try {
+        server.listen(port, () => {
+            logger.info(chalk.blueBright.bold.underline(`⇨ 🚀 Server running in ${env} mode on port ${port}`))
+        })
+    } catch (err: any) {
+        logger.error(chalk.redBright.bold.underline(`⇨ ❌ Server error: ${err.message}`))
+        process.exit(1)
+    }
 }
 
-// Start the server and handle any errors
-startServer()
-  .then(server => {
-    logger.info('Server started successfully')
-
-    // Do any additional setup or initialization here 👇🏼
-
-    // Gracefully shut down the server and exit the process if necessary
-    process.on('SIGTERM', () => {
-      server.close(() => {
-        logger.info('Received SIGTERM signal: Server shutdown complete')
-        process.exit(0)
-      })
-    })
-  })
-  .catch(err => {
-    logger.error('Server startup error:', err)
-    process.exit(1)
-  })
+void main()

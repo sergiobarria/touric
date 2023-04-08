@@ -1,34 +1,40 @@
 {
-  "name": "touric",
-  "version": "1.0.0",
-  "description": "Full-stack web application for a travel agency",
-  "workspaces": [
-    "server"
-  ],
-  "scripts": {
-    "dev:docker": "docker compose up -d && docker compose logs -f --tail=100 server",
-    "dev:docker:build": "docker compose up --build -d && docker compose logs -f --tail=100 server",
-    "dev:server": "npm run dev --prefix server",
-    "build:server": "npm run build --prefix server",
-    "start:server": "npm run start --prefix server",
-    "typecheck:server": "npm run typecheck --prefix server",
-    "lint:server": "npm run lint --prefix server",
-    "lint": "npm run lint:server",
-    "lint-fix:server": "npm run lint:fix --prefix server",
-    "lint-staged": "lint-staged",
-    "seed": "npm run seed --prefix server",
-    "prepare": "husky install"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.2"
-  },
-  "lint-staged": {
-    "server/**/*.{js,ts}": [
-      "npm run lint-fix:server"
-    ]
-  }
+    "name": "touric",
+    "version": "1.0.0",
+    "description": "Full-stack web application for a travel agency",
+    "repository": "git@github.com:sergiobarria/touric.git",
+    "author": "sergiobarria <email@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "server/"
+    ],
+    "scripts": {
+        "dev:server": "yarn --cwd server dev",
+        "dev": "concurrently \"yarn dev:server\"",
+        "build:server": "yarn --cwd server build",
+        "build": "yarn build:server",
+        "start:server": "yarn --cwd server start",
+        "start": "yarn start:server",
+        "lint:server": "yarn --cwd server lint",
+        "lint": "yarn lint:server",
+        "typecheck:server": "yarn --cwd server typecheck",
+        "typecheck": "yarn typecheck:server",
+        "format:server": "yarn --cwd server format",
+        "format": "yarn format:server",
+        "lint-staged": "lint-staged",
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.0.1",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.1"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "yarn format",
+            "yarn lint",
+            "yarn typecheck"
+        ]
+    }
 }

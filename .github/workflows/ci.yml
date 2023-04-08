@@ -1,0 +1,29 @@
+name: CI
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+                uses: actions/checkout@v2
+            
+            - name: Set up Node.js
+                uses: actions/setup-node@v2
+                with:
+                    node-version: 18.x
+
+            - name: Install dependencies
+                run: yarn install --frozen-lockfile
+
+            - name: Build server
+                run: yarn build
+
+            - name: Lint server
+                run: yarn lint
+
+            - name: Type check server
+                run: yarn type-check
