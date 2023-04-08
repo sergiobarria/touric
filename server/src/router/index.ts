@@ -1,6 +1,8 @@
 import express, { type Request, type Response } from 'express'
 import httpStatus from 'http-status'
 
+import { toursRouter } from './v1/tours/tours.router'
+
 const router = express.Router()
 
 /**
@@ -22,5 +24,6 @@ router.get('/healthcheck', (_: Request, res: Response) => {
 })
 
 // ===== Register Other routes here 👇🏼 =====
+router.use('/tours', toursRouter)
 
 export { router as routerV1 }
