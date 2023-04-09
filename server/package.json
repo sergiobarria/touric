@@ -11,7 +11,8 @@
         "lint:fix": "eslint ./src --ext .ts --fix",
         "typecheck": "tsc --noEmit --project tsconfig.json",
         "format": "prettier --write ./src/**/*",
-        "generate": "prisma generate"
+        "generate": "prisma generate",
+        "seed": "npx prisma db seed"
     },
     "dependencies": {
         "@prisma/client": "^4.12.0",
@@ -57,5 +58,8 @@
         "tsx": "^3.12.6",
         "typescript": "*",
         "winston": "^3.8.2"
+    },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
     }
 }

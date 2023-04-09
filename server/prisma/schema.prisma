@@ -11,8 +11,27 @@ datasource db {
 }
 
 model tours {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String @unique
-  rating Float  @default(4.5)
-  price  Float  @default(0)
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  name            String     @unique
+  slug            String?    @unique
+  duration        Int
+  maxGroupSize    Int
+  difficulty      Difficulty
+  ratingsAverage  Float
+  ratingsQuantity Int
+  price           Float      @default(0)
+  priceDiscount   Float?
+  summary         String
+  description     String
+  imageCover      String
+  images          String[]
+  startDates      String[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+enum Difficulty {
+  easy
+  medium
+  difficult
 }

@@ -24,6 +24,8 @@
         "format": "yarn format:server",
         "generate": "yarn --cwd server generate",
         "lint-staged": "lint-staged",
+        "seed": "yarn --cwd server seed",
+        "all": "yarn typecheck && yarn lint && yarn format",
         "prepare": "husky install"
     },
     "devDependencies": {
