@@ -11,6 +11,8 @@ datasource db {
 }
 
 model tours {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  rating Float  @default(4.5)
+  price  Float  @default(0)
 }
