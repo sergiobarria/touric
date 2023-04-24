@@ -1,8 +1,8 @@
 import express, { type Request, type Response } from 'express'
 import httpStatus from 'http-status'
 
-import { toursRouter } from './v1/tours/tours.router'
-import { usersRouter } from './v1/users/users.router'
+import { toursRouter } from './tours/tours.router'
+import { usersRouter } from './users/users.router'
 
 const router = express.Router()
 

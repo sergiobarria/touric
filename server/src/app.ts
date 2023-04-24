@@ -2,7 +2,7 @@ import express from 'express'
 import config from 'config'
 
 import { morganMiddleware } from './middlewares'
-import { routerV1 } from './router'
+import { routerV1 } from './router/v1'
 
 export const app = express()
 
