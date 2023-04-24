@@ -5,6 +5,14 @@ import asyncHandler from 'express-async-handler'
 import type { CreateTourType, GetTourParams } from './tours.schemas'
 import * as services from './tours.services'
 
+export const aliasTopTours = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    req.query.limit = '5'
+    req.query.sort = '-ratingsAverage,price'
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
+
+    next()
+})
+
 /**
  * @desc: Create a new tour
  * @endpoint: POST /api/v1/tours
@@ -28,7 +36,7 @@ export const createTourHandler = asyncHandler(
  * @access: Public
  */
 export const getToursHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const tours = await services.findMany()
+    const tours = await services.findMany(req.query)
 
     res.status(httpStatus.OK).json({
         success: true,
@@ -88,3 +96,10 @@ export const deleteTourHandler = asyncHandler(
         })
     }
 )
+
+/**
+ * @desc: Get top 5 tours
+ * @endpoint: GET /api/v1/tours/top-five
+ * @access: Public
+ */
+// export const getTopFiveToursHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {})
