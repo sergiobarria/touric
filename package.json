@@ -10,22 +10,22 @@
         "server/"
     ],
     "scripts": {
-        "dev:server": "yarn --cwd server dev",
-        "dev": "concurrently \"yarn dev:server\"",
-        "build:server": "yarn --cwd server build",
-        "build": "yarn build:server",
-        "start:server": "yarn --cwd server start",
-        "start": "yarn start:server",
-        "lint:server": "yarn --cwd server lint",
-        "lint": "yarn lint:server",
-        "typecheck:server": "tsc --noEmit --project server/tsconfig.json",
-        "typecheck": "yarn typecheck:server",
-        "format:server": "yarn --cwd server format",
-        "format": "yarn format:server",
-        "generate": "yarn --cwd server generate",
+        "dev-server": "npm run dev --prefix server",
+        "dev": "concurrently \"npm run dev-server\"",
+        "build-server": "npm run build --prefix server",
+        "build": "npm run build-server",
+        "start-server": "npm run start --prefix server",
+        "start": "concurrently \"npm run start-server\"",
+        "lint-server": "npm run lint --prefix server",
+        "lint": "yarn lint-server",
+        "typecheck-server": "npm run typecheck --prefix server",
+        "typecheck": "npm run typecheck-server",
+        "format-server": "npm run format --prefix server",
+        "format": "npm run format-server",
+        "generate": "npm run generate --prefix server",
         "lint-staged": "lint-staged",
-        "seed": "yarn --cwd server seed",
-        "all": "yarn typecheck && yarn lint && yarn format",
+        "seed": "npm run seed --prefix server",
+        "all": "npm run lint && npm run typecheck && npm run format",
         "prepare": "husky install"
     },
     "devDependencies": {
@@ -35,8 +35,8 @@
     },
     "lint-staged": {
         "server/**/*.{ts,tsx}": [
-            "yarn lint",
-            "yarn format"
+            "npm run lint",
+            "npm run format"
         ]
     }
 }
