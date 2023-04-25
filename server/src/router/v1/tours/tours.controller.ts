@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express'
 import httpStatus from 'http-status'
 import asyncHandler from 'express-async-handler'
 
-import type { CreateTourType, GetTourParams } from './tours.schemas'
+import type { CreateTourType, GetTourParams, MonthlyPlanParams } from './tours.schemas'
 import * as services from './tours.services'
 
 export const aliasTopTours = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -98,8 +98,31 @@ export const deleteTourHandler = asyncHandler(
 )
 
 /**
- * @desc: Get top 5 tours
- * @endpoint: GET /api/v1/tours/top-five
+ * @desc: Get tour stats
+ * @endpoint: GET /api/v1/tours/stats
  * @access: Public
  */
-// export const getTopFiveToursHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {})
+export const getTourStats = asyncHandler(async (_: Request, res: Response) => {
+    const stats = await services.getTourStats()
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        data: { stats }
+    })
+})
+
+/**
+ * @desc: Get monthly plan
+ * @endpoint: GET /api/v1/tours/monthly-plan
+ * @access: Public
+ */
+export const getMonthlyPlan = asyncHandler(async (req: Request<MonthlyPlanParams>, res: Response) => {
+    const year = Number(req.params.year)
+
+    const plan = await services.getMonthlyPlan(year)
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        data: { plan }
+    })
+})

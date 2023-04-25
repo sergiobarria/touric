@@ -7,6 +7,8 @@ import * as schemas from './tours.schemas'
 const router = express.Router()
 
 router.route('/top-five').get(controller.aliasTopTours, controller.getToursHandler)
+router.route('/stats').get(controller.getTourStats)
+router.route('/monthly-plan/:year').get(validate(schemas.monthlyPlanSchema), controller.getMonthlyPlan)
 
 router.route('/').get(controller.getToursHandler).post(validate(schemas.createTourSchema), controller.createTourHandler)
 router

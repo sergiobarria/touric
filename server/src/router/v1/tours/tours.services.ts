@@ -51,3 +51,86 @@ export const getTopFive = async (): Promise<tours[]> => {
     const records = await prisma.tours.findMany()
     return records
 }
+
+export const getTourStats = async (): Promise<Prisma.JsonObject> => {
+    const stats = await prisma.tours.aggregateRaw({
+        pipeline: [
+            {
+                $match: {
+                    ratingsAverage: {
+                        $gte: 4.5
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $toUpper: '$difficulty' },
+                    numTours: { $sum: 1 },
+                    numRatings: { $sum: '$ratingsQuantity' },
+                    avgRating: { $avg: '$ratingsAverage' },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $min: '$price' },
+                    maxPrice: { $max: '$price' }
+                }
+            },
+            {
+                $sort: { avgPrice: 1 }
+            }
+            // {
+            //     $match: { _id: { $ne: 'easy' } }
+            // }
+        ]
+    })
+
+    return stats
+}
+
+export const getMonthlyPlan = async (year: number): Promise<any> => {
+    const plan = await prisma.tours.aggregateRaw({
+        pipeline: [
+            {
+                $unwind: '$startDates'
+            },
+            {
+                $match: {
+                    startDates: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lte: new Date(`${year}-12-31`)
+                    }
+                } as any
+            },
+            {
+                $addFields: {
+                    startDates: {
+                        $cond: {
+                            if: { $eq: [{ $type: '$startDates' }, 'string'] },
+                            then: { $toDate: '$startDates' },
+                            else: '$startDates'
+                        }
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: '$startDates' },
+                    numTourStarts: { $sum: 1 },
+                    tours: { $push: '$name' }
+                }
+            },
+            {
+                $addFields: { month: '$_id' }
+            },
+            {
+                $project: { _id: 0 }
+            },
+            {
+                $sort: { numTourStarts: -1 }
+            },
+            {
+                $limit: 12
+            }
+        ]
+    })
+
+    return plan
+}

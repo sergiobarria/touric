@@ -51,5 +51,14 @@ export const getTourSchema = z.object({ ...params })
 
 export const updateTourSchema = createTourSchema.deepPartial()
 
+export const monthlyPlanSchema = z.object({
+    params: z.object({
+        year: z.string({
+            required_error: 'Year is required'
+        })
+    })
+})
+
 export type CreateTourType = z.infer<typeof createTourSchema>['body']
 export type GetTourParams = z.infer<typeof getTourSchema>['params']
+export type MonthlyPlanParams = z.infer<typeof monthlyPlanSchema>['params']
