@@ -1,7 +1,7 @@
 import morgan, { type StreamOptions } from 'morgan'
 import chalk from 'chalk'
 
-import { logger } from '@/utils'
+import { logger } from '../utils'
 
 const stream: StreamOptions = {
     write: (message: string): void => {
