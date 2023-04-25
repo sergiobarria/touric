@@ -13,7 +13,8 @@
         "format": "prettier --write ./src/**/*",
         "generate": "prisma generate",
         "seed": "npx prisma db seed",
-        "studio": "npx prisma studio"
+        "studio": "npx prisma studio",
+        "prestart": "npx prisma generate"
     },
     "dependencies": {
         "@prisma/client": "^4.12.0",

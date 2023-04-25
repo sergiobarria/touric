@@ -1,10 +1,10 @@
-name: CI
+name: Server CI/CD
 on:
     pull_request:
         branches: [main]
 
 jobs:
-    build-and-test:
+    build-and-check:
         runs-on: ubuntu-latest
 
         steps:
