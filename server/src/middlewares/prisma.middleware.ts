@@ -23,5 +23,9 @@ export async function toursMiddleware(
         // Do something with the result
     }
 
+    if (params.model === collection && (params.action === 'findMany' || params.action === 'findUnique')) {
+        // add the duration in weeks for each tour
+    }
+
     return result
 }

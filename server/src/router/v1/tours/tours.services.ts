@@ -1,5 +1,5 @@
 import type { tours, Prisma } from '@prisma/client'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, round } from 'lodash'
 
 import { prisma } from '@/lib'
 import type { CreateTourType } from './tours.schemas'
@@ -24,6 +24,12 @@ export const findMany = async (query?: Record<string, any>): Promise<object[]> =
         skip: queryBuilder.paginate().skip,
         take: queryBuilder.paginate().take
     })
+
+    // add the duration in weeks for each tour
+    records.forEach((record: any) => {
+        record.durationWeeks = round(record.duration / 7, 2)
+    })
+
     return records
 }
 
