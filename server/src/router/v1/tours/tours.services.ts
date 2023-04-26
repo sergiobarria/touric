@@ -7,7 +7,12 @@ import { QueryBuilder } from '@/utils'
 
 const numberFields = ['duration', 'price', 'ratingsAverage', 'ratingsQuantity', 'maxGroupSize', 'priceDiscount']
 
-export const createOne = async (data: CreateTourType): Promise<tours> => {
+export const createOne = async (data: CreateTourType): Promise<tours | null> => {
+    // check if a tour with the given name already exists
+    const tourExists = await prisma.tours.findUnique({ where: { name: data.name } })
+
+    if (tourExists !== null) return null
+
     const record = await prisma.tours.create({ data })
     return record
 }
