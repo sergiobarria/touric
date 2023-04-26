@@ -7,10 +7,22 @@ import { app } from './app'
 import { logger } from './utils'
 import { prisma } from './lib'
 
-let server: http.Server
-
 const port = config.get<string>('PORT')
 const env = config.get<string>('NODE_ENV')
+
+let server: http.Server
+
+// Handle uncaught exceptions globally
+process.on('uncaughtException', err => {
+    logger.error('Uncaught exception:', err)
+    process.exit(1)
+})
+
+// Handle unhandled promise rejections globally
+process.on('unhandledRejection', err => {
+    logger.error('Unhandled rejection:', err)
+    process.exit(1)
+})
 
 async function main(): Promise<void> {
     server = http.createServer(app)
