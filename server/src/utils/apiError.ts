@@ -4,6 +4,7 @@ export class APIError extends Error {
     public statusCode: number
     public status: 'fail' | 'error'
     public isOperational: boolean
+    public meta?: any
 
     constructor(message: string, statusCode: number) {
         super(message)
