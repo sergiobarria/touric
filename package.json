@@ -7,7 +7,7 @@
     "license": "MIT",
     "private": true,
     "workspaces": [
-        "server/"
+        "server"
     ],
     "scripts": {
         "dev-server": "npm run dev --prefix server",
