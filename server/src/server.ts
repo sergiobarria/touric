@@ -1,56 +1,34 @@
-import * as http from 'http'
+import * as http from 'http';
 
-import config from 'config'
-import chalk from 'chalk'
+import config from 'config';
+import chalk from 'chalk';
 
-import { app } from './app'
-import { logger } from './utils'
-import { prisma } from './lib'
+import { app } from './app';
+import { logger } from './utils';
 
-const port = config.get<string>('PORT')
-const env = config.get<string>('NODE_ENV')
-
-let server: http.Server
-
-// Handle uncaught exceptions globally
-process.on('uncaughtException', err => {
-    logger.error('Uncaught exception:', err)
-    process.exit(1)
-})
-
-// Handle unhandled promise rejections globally
-process.on('unhandledRejection', err => {
-    logger.error('Unhandled rejection:', err)
-    process.exit(1)
-})
+let server: http.Server;
+const port = config.get<string>('PORT');
+const env = config.get<string>('NODE_ENV');
 
 async function main(): Promise<void> {
-    server = http.createServer(app)
-
-    // connect to database
-    await prisma.$connect().finally(() => {
-        logger.info(chalk.greenBright.bold.underline('⇨ 💾 Connected to mongodb database'))
-    })
+    server = http.createServer(app);
 
     try {
         server.listen(port, () => {
-            logger.info(chalk.blueBright.bold.underline(`⇨ 🚀 Server running in ${env} mode on port ${port}`))
-        })
+            logger.info(chalk.blueBright.bold.underline(`⇨ 🚀 Server running in ${env} mode on port ${port}`));
+        });
     } catch (err: any) {
-        logger.error(chalk.redBright.bold.underline(`⇨ ❌ Server error: ${err.message}`))
-        process.exit(1)
+        logger.error(chalk.redBright.bold.underline(`⇨ ❌ Server error: ${err.message}`));
+        process.exit(1);
     }
 }
 
 function shutdown(): void {
-    logger.info(chalk.magentaBright.bold.underline('⇨ 🔴 Shutting down server...'))
-    void server.close()
-    prisma.$disconnect().finally(() => {
-        process.exit(0)
-    })
+    logger.info(chalk.magentaBright.bold.underline('⇨ 🔴 Shutting down server...'));
+    void server.close();
 }
 
-process.on('SIGTERM', shutdown)
-process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
 
-void main()
+void main();

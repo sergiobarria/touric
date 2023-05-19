@@ -15,5 +15,6 @@ logs/
 .env.production
 
 # other
+swc/*
 _old/
 

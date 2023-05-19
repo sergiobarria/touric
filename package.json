@@ -7,7 +7,7 @@
     "license": "MIT",
     "private": true,
     "workspaces": [
-        "server/"
+        "server"
     ],
     "scripts": {
         "dev-server": "npm run dev --prefix server",
@@ -17,7 +17,7 @@
         "start-server": "npm run start --prefix server",
         "start": "concurrently \"npm run start-server\"",
         "lint-server": "npm run lint --prefix server",
-        "lint": "yarn lint-server",
+        "lint": "npm run lint-server",
         "typecheck-server": "npm run typecheck --prefix server",
         "typecheck": "npm run typecheck-server",
         "format-server": "npm run format --prefix server",
