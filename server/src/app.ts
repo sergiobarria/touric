@@ -1,7 +1,7 @@
 import express, { type Express } from 'express';
 import config from 'config';
 
-import { routerV1 } from './routes';
+import { routerV1 } from './api';
 import { morganMiddleware } from './middlewares';
 import { envs } from './constants';
 

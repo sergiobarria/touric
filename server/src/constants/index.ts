@@ -1,4 +1,1 @@
-export const envs = {
-    development: 'development',
-    production: 'production'
-};
+export * from './config';
