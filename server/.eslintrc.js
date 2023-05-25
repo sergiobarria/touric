@@ -11,10 +11,11 @@ module.exports = {
         project: './tsconfig.json',
         tsconfigRootDir: __dirname
     },
+    ignorePatterns: ['config/*', 'dist/*', 'node_modules/*'],
     rules: {
         '@typescript-eslint/restrict-template-expressions': 'off',
         '@typescript-eslint/no-confusing-void-expression': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unused-vars': 'warn'
     }
-}
+};
