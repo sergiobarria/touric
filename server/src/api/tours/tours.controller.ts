@@ -1,8 +1,21 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import * as services from './tours.services';
 import type { CreateTourInput, GetTourParams, UpdateTourInput } from '@/api/tours/tours.schemas';
+
+/**
+ * @desc: Get top five tours
+ * @endpoint: GET /api/v1/tours/top-five
+ * @access: Public
+ */
+export async function aliasTopTours(req: Request, _: Response, next: NextFunction): Promise<void> {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+
+    next();
+}
 
 /**
  * @desc: Create a new tour
@@ -35,7 +48,7 @@ export async function createTour(req: Request<unknown, unknown, CreateTourInput>
  */
 export async function getTours(req: Request, res: Response): Promise<Response> {
     try {
-        const tours = await services.getAll();
+        const tours = await services.getAll(req.query);
 
         return res.status(httpStatus.OK).json({
             success: true,
@@ -45,10 +58,10 @@ export async function getTours(req: Request, res: Response): Promise<Response> {
             data: { tours }
         });
     } catch (error) {
-        return res.status(httpStatus.BAD_REQUEST).json({
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
-            statusCode: httpStatus.BAD_REQUEST,
-            message: 'Invalid data sent'
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: 'something went wrong'
         });
     }
 }

@@ -1,7 +1,9 @@
 import { omit } from 'lodash';
+import type { FilterQuery } from 'mongoose';
 
 import { Tour, privateFields, type TourDocument } from '@/models';
 import type { CreateTourInput, UpdateTourInput } from '@/api/tours/tours.schemas';
+import { APIFilterFeatures } from '@/utils';
 
 export async function createOne(data: CreateTourInput): Promise<Partial<TourDocument> | undefined> {
     const tour = await Tour.create(data);
@@ -9,8 +11,14 @@ export async function createOne(data: CreateTourInput): Promise<Partial<TourDocu
     return omit(tour.toJSON(), privateFields);
 }
 
-export async function getAll(): Promise<TourDocument[]> {
-    const tours = await Tour.find();
+export async function getAll(reqQuery: FilterQuery<TourDocument>): Promise<TourDocument[]> {
+    // BUILD & EXECUTE QUERY
+    const features = new APIFilterFeatures<TourDocument>(Tour.find(), reqQuery)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+    const tours = await features.query;
 
     return tours;
 }
