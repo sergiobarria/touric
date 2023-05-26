@@ -1,9 +1,10 @@
-import express, { type Express } from 'express';
+import express, { type NextFunction, type Express, type Response, type Request } from 'express';
 import config from 'config';
 
 import { routerV1 } from './api';
-import { morganMiddleware } from './middlewares';
+import { morganMiddleware, globalErrorMiddleware } from './middlewares';
 import { envs } from './constants';
+import { APIError } from './lib';
 
 export const app: Express = express();
 
@@ -18,3 +19,11 @@ if (env === envs.development) {
 
 // ===== Register Routes 👇🏼 =====
 app.use('/api/v1', routerV1);
+
+// Not found route handler
+app.use('*', (req: Request, res: Response, next: NextFunction) => {
+    next(APIError.notFound(`Can't find ${req.originalUrl} on this server!`));
+});
+
+// ===== Register Global Error Middleware Handler 👇🏼 =====
+app.use(globalErrorMiddleware);
