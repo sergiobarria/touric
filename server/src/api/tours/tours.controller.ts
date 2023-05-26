@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import * as services from './tours.services';
-import type { CreateTourInput, GetTourParams, UpdateTourInput } from '@/api/tours/tours.schemas';
+import type { CreateTourInput, GetMonthlyPlanParams, GetTourParams, UpdateTourInput } from '@/api/tours/tours.schemas';
 
 /**
  * @desc: Get top five tours
@@ -135,4 +135,55 @@ export async function deleteTour(req: Request<GetTourParams>, res: Response): Pr
         message: 'tour deleted successfully',
         data: null
     });
+}
+
+/**
+ * @desc: Get tours stats by difficulty
+ * @endpoint: DELETE /api/v1/tours/stats
+ * @access: Public
+ */
+export async function getTourStats(req: Request, res: Response): Promise<Response> {
+    try {
+        const stats = await services.getTourStats();
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: 'tour stats fetched successfully',
+            data: { stats }
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Something went wrong'
+        });
+    }
+}
+
+/**
+ * @desc: Get monthly plan of tours by year
+ * @endpoint: DELETE /api/v1/tours/monthly-plan/:year
+ * @access: Public
+ */
+export async function getMonthlyPlan(req: Request<GetMonthlyPlanParams>, res: Response): Promise<Response> {
+    try {
+        const { year } = req.params;
+        const plan = await services.getMonthlyPlan(year);
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: 'tour monthly plan fetched successfully',
+            data: { plan }
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Something went wrong'
+        });
+    }
 }
