@@ -142,7 +142,7 @@ export async function deleteTour(req: Request<GetTourParams>, res: Response): Pr
  * @endpoint: DELETE /api/v1/tours/stats
  * @access: Public
  */
-export async function getTourStats(req: Request, res: Response): Promise<Response> {
+export async function tourStats(req: Request, res: Response): Promise<Response> {
     try {
         const stats = await services.getTourStats();
 
@@ -167,7 +167,7 @@ export async function getTourStats(req: Request, res: Response): Promise<Respons
  * @endpoint: DELETE /api/v1/tours/monthly-plan/:year
  * @access: Public
  */
-export async function getMonthlyPlan(req: Request<GetMonthlyPlanParams>, res: Response): Promise<Response> {
+export async function monthlyPlan(req: Request<GetMonthlyPlanParams>, res: Response): Promise<Response> {
     try {
         const { year } = req.params;
         const plan = await services.getMonthlyPlan(year);

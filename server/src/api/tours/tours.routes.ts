@@ -4,9 +4,9 @@ import {
     aliasTopTours,
     createTour,
     deleteTour,
-    getMonthlyPlan,
+    monthlyPlan,
     getTour,
-    getTourStats,
+    tourStats,
     getTours,
     updateTour
 } from './tours.controller';
@@ -17,9 +17,9 @@ const router = express.Router();
 
 router.route('/top-five').get(aliasTopTours, getTours);
 
-router.route('/stats').get(getTourStats);
+router.route('/stats').get(tourStats);
 
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
+router.route('/monthly-plan/:year').get(monthlyPlan);
 
 router.route('/').get(getTours).post(validate(createTourSchema), createTour);
 
