@@ -17,4 +17,5 @@ logs/
 # other
 swc/*
 _old/
+mongo-data/
 

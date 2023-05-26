@@ -26,7 +26,8 @@
         "lint-staged": "lint-staged",
         "seed": "npm run seed --prefix server",
         "all": "npm run lint && npm run typecheck && npm run format",
-        "studio": "npm run studio --prefix server",
+        "db-up": "npm run docker-up --prefix server",
+        "db-down": "npm run docker-down --prefix server",
         "prepare": "husky install"
     },
     "devDependencies": {

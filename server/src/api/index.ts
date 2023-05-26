@@ -1,8 +1,8 @@
 import express, { type Request, type Response } from 'express';
 import httpStatus from 'http-status';
 
-import { toursRouter } from './tours.routes';
-import { usersRouter } from './users.routes';
+import { toursRouter } from './tours';
+import { usersRouter } from './users';
 
 export const routerV1 = express();
 
