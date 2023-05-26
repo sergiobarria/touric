@@ -23,7 +23,8 @@ export async function getOne(id: string): Promise<TourDocument | null> {
 
 export async function updateOne(id: string, data: UpdateTourInput): Promise<TourDocument> {
     const tour = await Tour.findByIdAndUpdate(id, data, {
-        new: true
+        new: true,
+        runValidators: true
     });
 
     if (tour === null) {

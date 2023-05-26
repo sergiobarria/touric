@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import * as services from './tours.services';
-import type { CreateTourInput, GetTourType, UpdateTourInput } from '@/api/tours/tours.schemas';
+import type { CreateTourInput, GetTourParams, UpdateTourInput } from '@/api/tours/tours.schemas';
 
 /**
  * @desc: Create a new tour
@@ -58,7 +58,7 @@ export async function getTours(req: Request, res: Response): Promise<Response> {
  * @endpoint: GET /api/v1/tours/:id
  * @access: Public
  */
-export async function getTour(req: Request<GetTourType>, res: Response): Promise<Response> {
+export async function getTour(req: Request<GetTourParams>, res: Response): Promise<Response> {
     try {
         const { id } = req.params;
         const tour = await services.getOne(id);
@@ -84,7 +84,7 @@ export async function getTour(req: Request<GetTourType>, res: Response): Promise
  * @access: Public
  */
 export async function updateTour(
-    req: Request<GetTourType, unknown, UpdateTourInput>,
+    req: Request<GetTourParams, unknown, UpdateTourInput>,
     res: Response
 ): Promise<Response> {
     try {
@@ -111,7 +111,7 @@ export async function updateTour(
  * @endpoint: DELETE /api/v1/tours/:id
  * @access: Public
  */
-export async function deleteTour(req: Request<GetTourType>, res: Response): Promise<Response> {
+export async function deleteTour(req: Request<GetTourParams>, res: Response): Promise<Response> {
     const { id } = req.params;
 
     await services.deleteOne(id);
