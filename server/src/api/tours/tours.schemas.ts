@@ -1,43 +1,51 @@
 import { z } from 'zod';
 
 const payload = {
-    body: z.object({
-        name: z
-            .string({
-                required_error: 'A tour must have a name'
-            })
-            .min(10)
-            .max(40),
-        duration: z.number({
-            required_error: 'A tour must have a duration'
-        }),
-        maxGroupSize: z.number({
-            required_error: 'A tour must have a group size'
-        }),
-        difficulty: z.enum(['easy', 'medium', 'difficult'], {
-            required_error: 'A tour must have a difficulty'
-        }),
-        ratingsAverage: z.number({
-            required_error: 'A tour must have a ratings average'
-        }),
-        ratingsQuantity: z.number({
-            required_error: 'A tour must have a ratings quantity'
-        }),
-        price: z.number({
-            required_error: 'A tour must have a price'
-        }),
-        summary: z.string({
-            required_error: 'A tour must have a summary'
-        }),
-        description: z.string({
-            required_error: 'A tour must have a description'
-        }),
-        imageCover: z.string({
-            required_error: 'A tour must have an image cover'
-        }),
-        images: z.array(z.string()),
-        startDates: z.array(z.string())
-    })
+    body: z
+        .object({
+            name: z
+                .string({
+                    required_error: 'A tour must have a name'
+                })
+                .min(10)
+                .max(40),
+            duration: z.number({
+                required_error: 'A tour must have a duration'
+            }),
+            maxGroupSize: z.number({
+                required_error: 'A tour must have a group size'
+            }),
+            difficulty: z.enum(['easy', 'medium', 'difficult'], {
+                required_error: 'A tour must have a difficulty'
+            }),
+            ratingsAverage: z.number({
+                required_error: 'A tour must have a ratings average'
+            }),
+            ratingsQuantity: z.number({
+                required_error: 'A tour must have a ratings quantity'
+            }),
+            price: z.number({
+                required_error: 'A tour must have a price'
+            }),
+            priceDiscount: z.number().min(0).optional(),
+            summary: z.string({
+                required_error: 'A tour must have a summary'
+            }),
+            description: z.string({
+                required_error: 'A tour must have a description'
+            }),
+            imageCover: z.string({
+                required_error: 'A tour must have an image cover'
+            }),
+            images: z.array(z.string()),
+            startDates: z.array(z.string()),
+            secretTour: z.boolean().default(false)
+        })
+        .refine(data => {
+            if (data.priceDiscount !== undefined) {
+                return data.priceDiscount < data.price;
+            }
+        })
 };
 
 const params = {
@@ -55,6 +63,7 @@ export const updateTourSchema = z.object({
     body: z.object({
         name: z.string().min(10).max(40).optional(),
         price: z.number().min(0).optional(),
+        priceDiscount: z.number().min(0).optional(),
         ratingsAverage: z.number().min(1).max(5).optional(),
         ratingsQuantity: z.number().min(0).optional(),
         difficulty: z.enum(['easy', 'medium', 'difficult']).optional(),
@@ -64,7 +73,8 @@ export const updateTourSchema = z.object({
         images: z.array(z.string()).optional(),
         startDates: z.array(z.string()).optional(),
         duration: z.number().min(0).optional(),
-        maxGroupSize: z.number().min(0).optional()
+        maxGroupSize: z.number().min(0).optional(),
+        secretTour: z.boolean().optional()
     }),
     ...params
 });
