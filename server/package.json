@@ -12,7 +12,9 @@
         "typecheck": "tsc --noEmit --project tsconfig.json",
         "format": "prettier --write ./src/**/*",
         "docker-up": "docker compose -p touric up -d",
-        "docker-down": "docker compose down"
+        "docker-down": "docker compose down",
+        "seed": "ts-node ./scripts/seed.ts -i",
+        "destroy": "ts-node ./scripts/seed.ts -d"
     },
     "keywords": [],
     "author": "",
