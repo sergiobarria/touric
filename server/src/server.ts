@@ -2,6 +2,7 @@ import * as http from 'http';
 
 import config from 'config';
 import chalk from 'chalk';
+import 'express-async-errors';
 
 import { app } from './app';
 import { logger } from './utils';

@@ -29,21 +29,19 @@ export async function getOne(id: string): Promise<TourDocument | null> {
     return tour;
 }
 
-export async function updateOne(id: string, data: UpdateTourInput): Promise<TourDocument> {
+export async function updateOne(id: string, data: UpdateTourInput): Promise<TourDocument | null> {
     const tour = await Tour.findByIdAndUpdate(id, data, {
         new: true,
         runValidators: true
     });
 
-    if (tour === null) {
-        throw new Error('tour not found');
-    }
-
     return tour;
 }
 
-export async function deleteOne(id: string): Promise<void> {
-    await Tour.findByIdAndDelete(id);
+export async function deleteOne(id: string): Promise<TourDocument | null> {
+    const tour = await Tour.findByIdAndDelete(id);
+
+    return tour;
 }
 
 export async function getTourStats(): Promise<TourDocument[]> {

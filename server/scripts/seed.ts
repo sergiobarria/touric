@@ -7,10 +7,11 @@ import config from 'config';
 
 import { Tour } from '../src/models';
 
-const MONGO_URI = config.get<string>('MONGO_URI');
+const NODE_ENV = config.get<string>('NODE_ENV');
+const URI = NODE_ENV === 'production' ? config.get<string>('MONGO_URI_PROD') : config.get<string>('MONGO_URI');
 
 mongoose
-    .connect(MONGO_URI)
+    .connect(URI)
     .then(() => {
         console.log(chalk.green('⇨ 🗄️  Connection to MongoDB successful'));
     })

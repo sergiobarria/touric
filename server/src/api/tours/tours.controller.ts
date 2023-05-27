@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 
 import * as services from './tours.services';
 import type { CreateTourInput, GetMonthlyPlanParams, GetTourParams, UpdateTourInput } from '@/api/tours/tours.schemas';
+import { APIError } from '@/lib';
 
 /**
  * @desc: Get top five tours
@@ -22,23 +23,23 @@ export async function aliasTopTours(req: Request, _: Response, next: NextFunctio
  * @endpoint: POST /api/v1/tours
  * @access: Public
  */
-export async function createTour(req: Request<unknown, unknown, CreateTourInput>, res: Response): Promise<Response> {
-    try {
-        const tour = await services.createOne(req.body);
+export async function createTour(
+    req: Request<unknown, unknown, CreateTourInput>,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
+    const tour = await services.createOne(req.body);
 
-        return res.status(httpStatus.CREATED).json({
-            success: true,
-            statusCode: httpStatus.CREATED,
-            message: 'tour created successfully',
-            data: tour
-        });
-    } catch (error) {
-        return res.status(httpStatus.BAD_REQUEST).json({
-            success: false,
-            statusCode: httpStatus.BAD_REQUEST,
-            message: 'Invalid data sent'
-        });
+    if (tour === undefined) {
+        return next(APIError.badRequest('Unable to create tour'));
     }
+
+    res.status(httpStatus.CREATED).json({
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: 'tour created successfully',
+        data: tour
+    });
 }
 
 /**
@@ -46,24 +47,16 @@ export async function createTour(req: Request<unknown, unknown, CreateTourInput>
  * @endpoint: GET /api/v1/tours
  * @access: Public
  */
-export async function getTours(req: Request, res: Response): Promise<Response> {
-    try {
-        const tours = await services.getAll(req.query);
+export async function getTours(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    const tours = await services.getAll(req.query);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'tours fetched successfully',
-            results: tours.length,
-            data: { tours }
-        });
-    } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'something went wrong'
-        });
-    }
+    return res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tours fetched successfully',
+        results: tours.length,
+        data: { tours }
+    });
 }
 
 /**
@@ -71,24 +64,20 @@ export async function getTours(req: Request, res: Response): Promise<Response> {
  * @endpoint: GET /api/v1/tours/:id
  * @access: Public
  */
-export async function getTour(req: Request<GetTourParams>, res: Response): Promise<Response> {
-    try {
-        const { id } = req.params;
-        const tour = await services.getOne(id);
+export async function getTour(req: Request<GetTourParams>, res: Response, next: NextFunction): Promise<void> {
+    const { id } = req.params;
+    const tour = await services.getOne(id);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'tour fetched successfully',
-            data: { tour }
-        });
-    } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Something went wrong'
-        });
+    if (tour === null) {
+        return next(APIError.notFound('tour not found'));
     }
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tour fetched successfully',
+        data: { tour }
+    });
 }
 
 /**
@@ -98,25 +87,22 @@ export async function getTour(req: Request<GetTourParams>, res: Response): Promi
  */
 export async function updateTour(
     req: Request<GetTourParams, unknown, UpdateTourInput>,
-    res: Response
-): Promise<Response> {
-    try {
-        const { id } = req.params;
-        const tour = await services.updateOne(id, req.body);
+    res: Response,
+    next: NextFunction
+): Promise<void> {
+    const { id } = req.params;
+    const tour = await services.updateOne(id, req.body);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'tour updated successfully',
-            data: { tour }
-        });
-    } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Something went wrong'
-        });
+    if (tour === null) {
+        return next(APIError.notFound('tour not found'));
     }
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tour updated successfully',
+        data: { tour }
+    });
 }
 
 /**
@@ -124,12 +110,15 @@ export async function updateTour(
  * @endpoint: DELETE /api/v1/tours/:id
  * @access: Public
  */
-export async function deleteTour(req: Request<GetTourParams>, res: Response): Promise<Response> {
+export async function deleteTour(req: Request<GetTourParams>, res: Response, next: NextFunction): Promise<void> {
     const { id } = req.params;
+    const tour = await services.deleteOne(id);
 
-    await services.deleteOne(id);
+    if (tour === null) {
+        return next(APIError.notFound('tour not found'));
+    }
 
-    return res.status(httpStatus.OK).json({
+    res.status(httpStatus.OK).json({
         success: true,
         statusCode: httpStatus.OK,
         message: 'tour deleted successfully',
@@ -142,24 +131,15 @@ export async function deleteTour(req: Request<GetTourParams>, res: Response): Pr
  * @endpoint: DELETE /api/v1/tours/stats
  * @access: Public
  */
-export async function tourStats(req: Request, res: Response): Promise<Response> {
-    try {
-        const stats = await services.getTourStats();
+export async function tourStats(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    const stats = await services.getTourStats();
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'tour stats fetched successfully',
-            data: { stats }
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Something went wrong'
-        });
-    }
+    return res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tour stats fetched successfully',
+        data: { stats }
+    });
 }
 
 /**
@@ -167,23 +147,18 @@ export async function tourStats(req: Request, res: Response): Promise<Response> 
  * @endpoint: DELETE /api/v1/tours/monthly-plan/:year
  * @access: Public
  */
-export async function monthlyPlan(req: Request<GetMonthlyPlanParams>, res: Response): Promise<Response> {
-    try {
-        const { year } = req.params;
-        const plan = await services.getMonthlyPlan(year);
+export async function monthlyPlan(
+    req: Request<GetMonthlyPlanParams>,
+    res: Response,
+    next: NextFunction
+): Promise<Response> {
+    const { year } = req.params;
+    const plan = await services.getMonthlyPlan(year);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'tour monthly plan fetched successfully',
-            data: { plan }
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Something went wrong'
-        });
-    }
+    return res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tour monthly plan fetched successfully',
+        data: { plan }
+    });
 }
