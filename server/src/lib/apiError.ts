@@ -13,6 +13,7 @@ export class APIError extends Error {
     constructor(message: string, statusCode: number) {
         super(message);
 
+        this.message = message;
         this.statusCode = statusCode;
         this.status = `${statusCode}`.startsWith('4') ? Status.Fail : Status.Error;
         this.isOperational = true;
