@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Request, Response, RequestHandler } from 'express';
 import httpStatus from 'http-status';
 
 /**
@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
  * @route  POST /api/v1/users
  * @access Public
  */
-export const createUserHandler = async (req: Request, res: Response): Promise<Response> => {
+export const createUserHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     return res.status(httpStatus.NOT_IMPLEMENTED).json({
         success: true,
         statusCode: httpStatus.NOT_IMPLEMENTED,
@@ -19,7 +19,7 @@ export const createUserHandler = async (req: Request, res: Response): Promise<Re
  * @route  GET /api/v1/users
  * @access Public
  */
-export const getUsersHandler = async (req: Request, res: Response): Promise<Response> => {
+export const getUsersHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     return res.status(httpStatus.NOT_IMPLEMENTED).json({
         success: true,
         statusCode: httpStatus.NOT_IMPLEMENTED,
@@ -32,7 +32,7 @@ export const getUsersHandler = async (req: Request, res: Response): Promise<Resp
  * @route  GET /api/v1/users/:id
  * @access Public
  */
-export const getUserHandler = async (req: Request, res: Response): Promise<Response> => {
+export const getUserHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     return res.status(httpStatus.NOT_IMPLEMENTED).json({
         success: true,
         statusCode: httpStatus.NOT_IMPLEMENTED,
@@ -45,7 +45,7 @@ export const getUserHandler = async (req: Request, res: Response): Promise<Respo
  * @route  PATCH /api/v1/users/:id
  * @access Public
  */
-export const updateUserHandler = async (req: Request, res: Response): Promise<Response> => {
+export const updateUserHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     return res.status(httpStatus.NOT_IMPLEMENTED).json({
         success: true,
         statusCode: httpStatus.NOT_IMPLEMENTED,
@@ -58,7 +58,7 @@ export const updateUserHandler = async (req: Request, res: Response): Promise<Re
  * @route  DELETE /api/v1/users/:id
  * @access Public
  */
-export const deleteUserHandler = async (req: Request, res: Response): Promise<Response> => {
+export const deleteUserHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     return res.status(httpStatus.NOT_IMPLEMENTED).json({
         success: true,
         statusCode: httpStatus.NOT_IMPLEMENTED,

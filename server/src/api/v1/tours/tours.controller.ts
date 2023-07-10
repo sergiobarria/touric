@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { Request, Response } from 'express';
+import type { Request, Response, RequestHandler } from 'express';
 import httpStatus from 'http-status';
 
 const tours = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../dev-data/data/tours-simple.json'), 'utf-8'));
@@ -11,7 +11,7 @@ const tours = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../dev-d
  * @route  POST /api/v1/tours
  * @access Public
  */
-export const createTourHandler = async (req: Request, res: Response): Promise<void> => {
+export const createTourHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const newId = Number(tours[tours.length - 1].id) + 1;
     const newTour = { id: newId, ...req.body };
 
@@ -35,7 +35,7 @@ export const createTourHandler = async (req: Request, res: Response): Promise<vo
  * @route  GET /api/v1/tours
  * @access Public
  */
-export const getToursHandler = async (_: Request, res: Response): Promise<void> => {
+export const getToursHandler: RequestHandler = async (_: Request, res: Response): Promise<void> => {
     res.status(httpStatus.OK).json({
         success: true,
         statusCode: httpStatus.OK,
@@ -49,7 +49,7 @@ export const getToursHandler = async (_: Request, res: Response): Promise<void> 
  * @route  GET /api/v1/tours/:id
  * @access Public
  */
-export const getTourHandler = async (req: Request, res: Response): Promise<Response> => {
+export const getTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const tour = tours.find((tour: any) => tour.id === Number(id));
 
@@ -74,7 +74,7 @@ export const getTourHandler = async (req: Request, res: Response): Promise<Respo
  * @route  PATCH /api/v1/tours/:id
  * @access Public
  */
-export const updateTourHandler = async (req: Request, res: Response): Promise<Response> => {
+export const updateTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
 
     if (Number(id) > tours.length) {
@@ -97,7 +97,7 @@ export const updateTourHandler = async (req: Request, res: Response): Promise<Re
  * @route  DELETE /api/v1/tours/:id
  * @access Public
  */
-export const deleteTourHandler = async (req: Request, res: Response): Promise<Response> => {
+export const deleteTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
 
     if (Number(id) > tours.length) {
