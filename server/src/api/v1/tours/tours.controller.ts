@@ -1,33 +1,33 @@
-import fs from 'fs';
-import path from 'path';
-
 import type { Request, Response, RequestHandler } from 'express';
 import httpStatus from 'http-status';
 
-const tours = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../dev-data/data/tours-simple.json'), 'utf-8'));
+import type { CreateTourInput, GetTourInput, UpdateTourInput } from './tours.schemas';
+import * as services from './tours.services';
 
 /**
  * @desc   Create a new tour
  * @route  POST /api/v1/tours
  * @access Public
  */
-export const createTourHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-    const newId = Number(tours[tours.length - 1].id) + 1;
-    const newTour = { id: newId, ...req.body };
+export const createTourHandler: RequestHandler = async (
+    req: Request<unknown, unknown, CreateTourInput>,
+    res: Response
+): Promise<Response> => {
+    try {
+        const newTour = await services.createOne(req.body);
 
-    tours.push(newTour);
-
-    fs.writeFile(path.join(__dirname, '../../../../dev-data/data/tours-simple.json'), JSON.stringify(tours), err => {
-        if (err !== null) {
-            console.error(err);
-        }
-
-        res.status(httpStatus.CREATED).json({
+        return res.status(httpStatus.CREATED).json({
             success: true,
             statusCode: httpStatus.CREATED,
             data: { tour: newTour },
         });
-    });
+    } catch (err: any) {
+        return res.status(httpStatus.BAD_REQUEST).json({
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: err.message,
+        });
+    }
 };
 
 /**
@@ -35,13 +35,23 @@ export const createTourHandler: RequestHandler = async (req: Request, res: Respo
  * @route  GET /api/v1/tours
  * @access Public
  */
-export const getToursHandler: RequestHandler = async (_: Request, res: Response): Promise<void> => {
-    res.status(httpStatus.OK).json({
-        success: true,
-        statusCode: httpStatus.OK,
-        results: tours.length,
-        data: { tours },
-    });
+export const getToursHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const tours = await services.getAll();
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            results: tours.length,
+            data: { tours },
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
+        });
+    }
 };
 
 /**
@@ -49,24 +59,32 @@ export const getToursHandler: RequestHandler = async (_: Request, res: Response)
  * @route  GET /api/v1/tours/:id
  * @access Public
  */
-export const getTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
-    const tour = tours.find((tour: any) => tour.id === Number(id));
+export const getTourHandler = async (req: Request<GetTourInput>, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const tour = await services.getOne(id);
 
-    if (tour === undefined) {
-        return res.status(httpStatus.NOT_FOUND).json({
+        if (tour === null) {
+            return res.status(httpStatus.NOT_FOUND).json({
+                success: false,
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'Invalid ID',
+                data: null,
+            });
+        }
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            data: { tour },
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
-            statusCode: httpStatus.NOT_FOUND,
-            message: 'Invalid ID',
-            data: null,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
         });
     }
-
-    return res.status(httpStatus.OK).json({
-        success: true,
-        statusCode: httpStatus.OK,
-        data: { tour },
-    });
 };
 
 /**
@@ -74,22 +92,35 @@ export const getTourHandler: RequestHandler = async (req: Request, res: Response
  * @route  PATCH /api/v1/tours/:id
  * @access Public
  */
-export const updateTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
+export const updateTourHandler = async (
+    req: Request<GetTourInput, unknown, UpdateTourInput>,
+    res: Response
+): Promise<Response> => {
+    try {
+        const { id } = req.params;
 
-    if (Number(id) > tours.length) {
-        return res.status(httpStatus.NOT_FOUND).json({
+        const updatedTour = await services.updateOne(id, req.body);
+
+        if (updatedTour === null) {
+            return res.status(httpStatus.NOT_FOUND).json({
+                success: false,
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'Invalid ID',
+            });
+        }
+
+        return res.status(httpStatus.OK).json({
             success: false,
-            statusCode: httpStatus.NOT_FOUND,
-            message: 'Invalid ID',
+            statusCode: httpStatus.OK,
+            data: { tour: updatedTour },
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
         });
     }
-
-    return res.status(httpStatus.NOT_IMPLEMENTED).json({
-        success: false,
-        statusCode: httpStatus.NOT_IMPLEMENTED,
-        message: 'This route is not yet implemented',
-    });
 };
 
 /**
@@ -98,19 +129,28 @@ export const updateTourHandler: RequestHandler = async (req: Request, res: Respo
  * @access Public
  */
 export const deleteTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
+        const deletedTour = await services.deleteOne(id);
 
-    if (Number(id) > tours.length) {
-        return res.status(httpStatus.NOT_FOUND).json({
+        if (deletedTour === null) {
+            return res.status(httpStatus.NOT_FOUND).json({
+                success: false,
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'Invalid ID',
+            });
+        }
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            message: 'Tour deleted successfully',
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
-            statusCode: httpStatus.NOT_FOUND,
-            message: 'Invalid ID',
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
         });
     }
-
-    return res.status(httpStatus.NOT_IMPLEMENTED).json({
-        success: false,
-        statusCode: httpStatus.NOT_IMPLEMENTED,
-        message: 'This route is not yet implemented',
-    });
 };

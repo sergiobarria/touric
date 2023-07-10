@@ -35,8 +35,6 @@ app.use('/healthcheck', (_: Request, res: Response): void => {
 
 app.use('/api/v1', routerV1);
 
-app.use('/endpoints', (_: Request, res: Response): void => {});
-
 // ===== Register Error Handlers 👇🏼 =====
 
 // ===== Register Not Found Handler 👇🏼 =====
