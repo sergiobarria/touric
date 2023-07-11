@@ -1,8 +1,21 @@
-import type { Request, Response, RequestHandler } from 'express';
+import type { Request, Response, RequestHandler, NextFunction } from 'express';
 import httpStatus from 'http-status';
 
-import type { CreateTourInput, GetTourInput, UpdateTourInput } from './tours.schemas';
+import type { CreateTourInput, GetToursInput, GetTourInput, UpdateTourInput } from './tours.schemas';
 import * as services from './tours.services';
+
+/**
+ * @desc   Get top 5 tours
+ * @route  GET /api/v1/tours
+ * @access Public
+ */
+export const aliasTopTours = (req: Request, res: Response, next: NextFunction): void => {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+
+    next();
+};
 
 /**
  * @desc   Create a new tour
@@ -35,9 +48,12 @@ export const createTourHandler: RequestHandler = async (
  * @route  GET /api/v1/tours
  * @access Public
  */
-export const getToursHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
+export const getToursHandler: RequestHandler = async (
+    req: Request<unknown, unknown, unknown, GetToursInput>,
+    res: Response
+): Promise<Response> => {
     try {
-        const tours = await services.getAll();
+        const tours = await services.getAll(req.query);
 
         return res.status(httpStatus.OK).json({
             success: true,

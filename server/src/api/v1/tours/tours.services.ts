@@ -2,6 +2,7 @@ import { omit } from 'lodash';
 
 import { TourModel, privateFields, type Tour } from '@/models';
 import type { CreateTourInput, UpdateTourInput } from './tours.schemas';
+import { APIQueryFeatures } from '@/utils';
 
 export async function createOne(data: CreateTourInput): Promise<Partial<Tour>> {
     const tour = await TourModel.create(data);
@@ -9,14 +10,15 @@ export async function createOne(data: CreateTourInput): Promise<Partial<Tour>> {
     return omit(tour.toJSON(), privateFields);
 }
 
-export async function getAll(): Promise<Tour[]> {
-    const tours = await TourModel.find().select('-__v');
+export async function getAll(reqQuery: Record<string, any> = {}): Promise<Tour[]> {
+    const features = new APIQueryFeatures<Tour>(TourModel.find(), reqQuery).filter().limitFields().sort().paginate();
+    const tours = await features.query;
 
     return tours;
 }
 
 export async function getOne(id: string): Promise<Partial<Tour> | null> {
-    const tour = await TourModel.findById(id).select('-__v');
+    const tour = await TourModel.findById(id);
 
     return tour !== null ? omit(tour.toJSON(), privateFields) : null;
 }
@@ -32,6 +34,5 @@ export async function updateOne(id: string, data: UpdateTourInput): Promise<Tour
 
 export async function deleteOne(id: string): Promise<Tour | null> {
     const tour = await TourModel.findByIdAndDelete(id);
-
     return tour;
 }

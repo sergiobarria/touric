@@ -1,6 +1,7 @@
 import express from 'express';
 
 import {
+    aliasTopTours,
     createTourHandler,
     deleteTourHandler,
     getTourHandler,
@@ -11,6 +12,8 @@ import { validate } from '@/middlewares';
 import { createTourSchema, getTourSchema, updateTourSchema } from './tours.schemas';
 
 const router = express.Router();
+
+router.route('/top-five').get(aliasTopTours, getToursHandler);
 
 router.route('/').get(getToursHandler).post(validate(createTourSchema), createTourHandler);
 

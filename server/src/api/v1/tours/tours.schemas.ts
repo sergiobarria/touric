@@ -44,12 +44,25 @@ const tourParams = {
     }),
 };
 
+const tourQuery = {
+    query: z.object({
+        sort: z.string().optional(),
+        fields: z.string().optional(),
+        page: z.number().min(1).optional(),
+        limit: z.number().min(1).optional(),
+    }),
+};
+
 export const createTourSchema = z.object({
     ...tourBase,
 });
 
 export const getTourSchema = z.object({
     ...tourParams,
+});
+
+export const getToursSchema = z.object({
+    ...tourQuery,
 });
 
 export const updateTourSchema = z.object({
@@ -74,3 +87,4 @@ export const updateTourSchema = z.object({
 export type CreateTourInput = z.infer<typeof createTourSchema>['body'];
 export type GetTourInput = z.infer<typeof getTourSchema>['params'];
 export type UpdateTourInput = z.infer<typeof updateTourSchema>['body'];
+export type GetToursInput = z.infer<typeof getToursSchema>['query'];
