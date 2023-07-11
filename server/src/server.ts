@@ -2,7 +2,6 @@ import * as http from 'http';
 
 import config from 'config';
 import chalk from 'chalk';
-import 'express-async-errors';
 
 import { app } from './app';
 import { logger } from './utils';
@@ -15,6 +14,7 @@ const NODE_ENV = config.get<string>('NODE_ENV');
 async function main(): Promise<void> {
     server = http.createServer(app);
 
+    // ===== Connect to MongoDB 👇🏼 =====
     await connectToMongoDB();
 
     try {
@@ -27,12 +27,5 @@ async function main(): Promise<void> {
     }
 }
 
-// function shutdown(): void {
-//     logger.info(chalk.magentaBright.bold.underline('⇨ 🔴 Shutting down server...'));
-//     void server.close();
-// }
-
-// process.on('SIGTERM', shutdown);
-// process.on('SIGINT', shutdown);
-
-void main();
+// start the server
+main();

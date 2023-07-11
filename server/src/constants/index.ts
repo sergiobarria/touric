@@ -1,1 +1,4 @@
-export * from './config';
+export enum envs {
+    DEVELOPMENT = 'development',
+    PRODUCTION = 'production',
+}

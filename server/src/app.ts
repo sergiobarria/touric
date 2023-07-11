@@ -1,10 +1,10 @@
-import express, { type NextFunction, type Express, type Response, type Request } from 'express';
+import express, { type Express, type Request, type Response } from 'express';
+import httpStatus from 'http-status';
 import config from 'config';
 
-import { routerV1 } from './api';
-import { morganMiddleware, globalErrorMiddleware } from './middlewares';
 import { envs } from './constants';
-import { APIError } from './lib';
+import { morganMiddleware } from './middlewares';
+import { routerV1 } from './api/v1/router';
 
 export const app: Express = express();
 
@@ -13,17 +13,28 @@ const env = config.get<string>('NODE_ENV');
 // ===== Register Middleware 👇🏼 =====
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-if (env === envs.development) {
+if (env === envs.DEVELOPMENT) {
     app.use(morganMiddleware);
 }
 
 // ===== Register Routes 👇🏼 =====
-app.use('/api/v1', routerV1);
-
-// Not found route handler
-app.use('*', (req: Request, res: Response, next: NextFunction) => {
-    next(APIError.notFound(`Can't find ${req.originalUrl} on this server!`));
+app.use('/healthcheck', (_: Request, res: Response): void => {
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'server is running',
+        details: {
+            name: 'Touric Server API',
+            version: '1.0.0',
+            uptime: process.uptime(),
+            memory: process.memoryUsage(),
+            timestamp: Date.now(),
+        },
+    });
 });
 
-// ===== Register Global Error Middleware Handler 👇🏼 =====
-app.use(globalErrorMiddleware);
+app.use('/api/v1', routerV1);
+
+// ===== Register Error Handlers 👇🏼 =====
+
+// ===== Register Not Found Handler 👇🏼 =====

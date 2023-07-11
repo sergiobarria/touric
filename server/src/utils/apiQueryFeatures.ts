@@ -1,7 +1,7 @@
-import type { FilterQuery, Query } from 'mongoose';
+import type { Query, FilterQuery } from 'mongoose';
 import { omit } from 'lodash';
 
-export class APIFilterFeatures<T> {
+export class APIQueryFeatures<T> {
     public query: Query<T[], T, unknown>;
     private readonly queryString: FilterQuery<T>;
 
@@ -10,7 +10,7 @@ export class APIFilterFeatures<T> {
         this.queryString = queryString;
     }
 
-    filter(): APIFilterFeatures<T> {
+    filter(): APIQueryFeatures<T> {
         let queryObj = { ...this.queryString };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         queryObj = omit(queryObj, excludedFields) as FilterQuery<T>;
@@ -23,29 +23,23 @@ export class APIFilterFeatures<T> {
         return this;
     }
 
-    sort(): APIFilterFeatures<T> {
-        if (this.queryString.sort !== undefined) {
-            const sortBy = (this.queryString.sort as string).split(',').join(' ');
-            this.query = this.query.sort(sortBy);
-        } else {
-            this.query = this.query.sort('-createdAt');
-        }
+    sort(): APIQueryFeatures<T> {
+        const sortBy =
+            this.queryString.sort !== undefined ? (this.queryString.sort as string).split(',').join(' ') : '-createdAt';
+        this.query = this.query.sort(sortBy);
 
         return this;
     }
 
-    limitFields(): APIFilterFeatures<T> {
-        if (this.queryString.fields !== undefined) {
-            const fields = (this.queryString.fields as string).split(',').join(' ');
-            this.query = this.query.select(fields);
-        } else {
-            this.query = this.query.select('-__v');
-        }
+    limitFields(): APIQueryFeatures<T> {
+        const fields =
+            this.queryString.fields !== undefined ? (this.queryString.fields as string).split(',').join(' ') : '-__v';
+        this.query = this.query.select(fields);
 
         return this;
     }
 
-    paginate(): APIFilterFeatures<T> {
+    paginate(): APIQueryFeatures<T> {
         const page = this.queryString.page * 1 ?? 1;
         const limit = this.queryString.limit * 1 ?? 100;
         const skip = (page - 1) * limit;

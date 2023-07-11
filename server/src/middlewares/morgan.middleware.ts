@@ -6,7 +6,7 @@ import { logger } from '../utils';
 const stream: StreamOptions = {
     write: (message: string): void => {
         logger.http(message.trim());
-    }
+    },
 };
 
 const skip = (): boolean => {
@@ -18,6 +18,6 @@ export const morganMiddleware = morgan(
     chalk`{greenBright.bold.underline :method} {blueBright.bold :url} {yellowBright.bold :status} {redBright.bold :response-time ms}`,
     {
         stream,
-        skip
+        skip,
     }
 );
