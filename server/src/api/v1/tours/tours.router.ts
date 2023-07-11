@@ -5,8 +5,10 @@ import {
     createTourHandler,
     deleteTourHandler,
     getTourHandler,
+    getToursStatsHandler,
     getToursHandler,
     updateTourHandler,
+    getMonthlyPlanHandler,
 } from './tours.controller';
 import { validate } from '@/middlewares';
 import { createTourSchema, getTourSchema, updateTourSchema } from './tours.schemas';
@@ -14,6 +16,10 @@ import { createTourSchema, getTourSchema, updateTourSchema } from './tours.schem
 const router = express.Router();
 
 router.route('/top-five').get(aliasTopTours, getToursHandler);
+
+router.route('/stats').get(getToursStatsHandler);
+
+router.route('/monthly-plan/:year').get(getMonthlyPlanHandler);
 
 router.route('/').get(getToursHandler).post(validate(createTourSchema), createTourHandler);
 

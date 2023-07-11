@@ -1,7 +1,13 @@
 import type { Request, Response, RequestHandler, NextFunction } from 'express';
 import httpStatus from 'http-status';
 
-import type { CreateTourInput, GetToursInput, GetTourInput, UpdateTourInput } from './tours.schemas';
+import type {
+    CreateTourInput,
+    GetToursInput,
+    GetTourInput,
+    UpdateTourInput,
+    GetMonthlyPlanInput,
+} from './tours.schemas';
 import * as services from './tours.services';
 
 /**
@@ -161,6 +167,54 @@ export const deleteTourHandler: RequestHandler = async (req: Request, res: Respo
             success: true,
             statusCode: httpStatus.OK,
             message: 'Tour deleted successfully',
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
+        });
+    }
+};
+
+/**
+ * @desc   Get tours stats
+ * @route  PATCH /api/v1/tours/stats
+ * @access Public
+ */
+export const getToursStatsHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const stats = await services.getToursStats();
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            data: { stats },
+        });
+    } catch (err: any) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: err.message,
+        });
+    }
+};
+
+/**
+ * @desc   Get monthly plan
+ * @route  PATCH /api/v1/tours/monthly-plan/:year
+ * @access Public
+ */
+export const getMonthlyPlanHandler = async (req: Request<GetMonthlyPlanInput>, res: Response): Promise<Response> => {
+    try {
+        const { year } = req.params;
+        const plan = await services.getMonthlyPlan(year);
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            statusCode: httpStatus.OK,
+            results: plan.length,
+            data: { plan },
         });
     } catch (err: any) {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({

@@ -84,7 +84,18 @@ export const updateTourSchema = z.object({
     }),
 });
 
+export const getMonthlyPlanSchema = z.object({
+    params: z.object({
+        year: z
+            .number({
+                required_error: 'Year is required',
+            })
+            .min(1),
+    }),
+});
+
 export type CreateTourInput = z.infer<typeof createTourSchema>['body'];
 export type GetTourInput = z.infer<typeof getTourSchema>['params'];
 export type UpdateTourInput = z.infer<typeof updateTourSchema>['body'];
 export type GetToursInput = z.infer<typeof getToursSchema>['query'];
+export type GetMonthlyPlanInput = z.infer<typeof getMonthlyPlanSchema>['params'];
