@@ -7,10 +7,13 @@ import config from 'config';
 
 import { TourModel } from '../src/models';
 
-const MONGO_URI = config.get<string>('MONGO_URI');
+const NODE_ENV = config.get<string>('NODE_ENV');
+const MONGO_URI_LOCAL = config.get<string>('MONGO_URI');
+const MONGO_URI_PROD = config.get<string>('MONGO_URI_PROD');
+const URI = NODE_ENV === 'production' ? MONGO_URI_PROD : MONGO_URI_LOCAL;
 
 mongoose
-    .connect(MONGO_URI)
+    .connect(URI)
     .then(() => {
         console.log(chalk.green('⇨ 🗄️  Connection to MongoDB successful'));
     })
