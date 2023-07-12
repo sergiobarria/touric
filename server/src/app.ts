@@ -1,10 +1,12 @@
-import express, { type Express, type Request, type Response } from 'express';
+import express, { type Express, type Request, type Response, type NextFunction } from 'express';
 import httpStatus from 'http-status';
 import config from 'config';
+import 'express-async-errors';
 
 import { envs } from './constants';
-import { morganMiddleware } from './middlewares';
+import { morganMiddleware, globalErrorHandler } from './middlewares';
 import { routerV1 } from './api/v1/router';
+import { APIError } from './utils/apiError';
 
 export const app: Express = express();
 
@@ -35,6 +37,10 @@ app.use('/healthcheck', (_: Request, res: Response): void => {
 
 app.use('/api/v1', routerV1);
 
-// ===== Register Error Handlers 👇🏼 =====
-
 // ===== Register Not Found Handler 👇🏼 =====
+app.all('*', (req: Request, res: Response, next: NextFunction): void => {
+    next(APIError.notFound(`Can't find ${req.originalUrl} on this server!`));
+});
+
+// ===== Register Error Handlers 👇🏼 =====
+app.use(globalErrorHandler);
