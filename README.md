@@ -9,3 +9,11 @@
 -   **ORM:** Mongoose
 
 ## Server
+
+## Commands
+
+### Generate a random secret with Crypto
+
+```bash
+$ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```

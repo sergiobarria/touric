@@ -9,6 +9,7 @@ import type {
     GetMonthlyPlanInput,
 } from './tours.schemas';
 import * as services from './tours.services';
+import { APIError } from '@/utils';
 
 /**
  * @desc   Get top 5 tours
@@ -30,23 +31,16 @@ export const aliasTopTours = (req: Request, res: Response, next: NextFunction): 
  */
 export const createTourHandler: RequestHandler = async (
     req: Request<unknown, unknown, CreateTourInput>,
-    res: Response
+    res: Response,
+    next: NextFunction
 ): Promise<Response> => {
-    try {
-        const newTour = await services.createOne(req.body);
+    const newTour = await services.createOne(req.body);
 
-        return res.status(httpStatus.CREATED).json({
-            success: true,
-            statusCode: httpStatus.CREATED,
-            data: { tour: newTour },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.BAD_REQUEST).json({
-            success: false,
-            statusCode: httpStatus.BAD_REQUEST,
-            message: err.message,
-        });
-    }
+    return res.status(httpStatus.CREATED).json({
+        success: true,
+        statusCode: httpStatus.CREATED,
+        data: { tour: newTour },
+    });
 };
 
 /**
@@ -56,24 +50,17 @@ export const createTourHandler: RequestHandler = async (
  */
 export const getToursHandler: RequestHandler = async (
     req: Request<unknown, unknown, unknown, GetToursInput>,
-    res: Response
+    res: Response,
+    next: NextFunction
 ): Promise<Response> => {
-    try {
-        const tours = await services.getAll(req.query);
+    const tours = await services.getAll(req.query);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            results: tours.length,
-            data: { tours },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    return res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        results: tours.length,
+        data: { tours },
+    });
 };
 
 /**
@@ -81,32 +68,17 @@ export const getToursHandler: RequestHandler = async (
  * @route  GET /api/v1/tours/:id
  * @access Public
  */
-export const getTourHandler = async (req: Request<GetTourInput>, res: Response): Promise<Response> => {
-    try {
-        const { id } = req.params;
-        const tour = await services.getOne(id);
+export const getTourHandler = async (req: Request<GetTourInput>, res: Response, next: NextFunction): Promise<void> => {
+    const { id } = req.params;
+    const tour = await services.getOne(id);
 
-        if (tour === null) {
-            return res.status(httpStatus.NOT_FOUND).json({
-                success: false,
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'Invalid ID',
-                data: null,
-            });
-        }
+    if (!tour) return next(APIError.notFound('tour not found'));
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            data: { tour },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        data: { tour },
+    });
 };
 
 /**
@@ -116,33 +88,20 @@ export const getTourHandler = async (req: Request<GetTourInput>, res: Response):
  */
 export const updateTourHandler = async (
     req: Request<GetTourInput, unknown, UpdateTourInput>,
-    res: Response
-): Promise<Response> => {
-    try {
-        const { id } = req.params;
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params;
 
-        const updatedTour = await services.updateOne(id, req.body);
+    const updatedTour = await services.updateOne(id, req.body);
 
-        if (updatedTour === null) {
-            return res.status(httpStatus.NOT_FOUND).json({
-                success: false,
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'Invalid ID',
-            });
-        }
+    if (!updatedTour) return next(APIError.notFound('tour not found'));
 
-        return res.status(httpStatus.OK).json({
-            success: false,
-            statusCode: httpStatus.OK,
-            data: { tour: updatedTour },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    res.status(httpStatus.OK).json({
+        success: false,
+        statusCode: httpStatus.OK,
+        data: { tour: updatedTour },
+    });
 };
 
 /**
@@ -150,31 +109,21 @@ export const updateTourHandler = async (
  * @route  DELETE /api/v1/tours/:id
  * @access Public
  */
-export const deleteTourHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const { id } = req.params;
-        const deletedTour = await services.deleteOne(id);
+export const deleteTourHandler: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { id } = req.params;
+    const deletedTour = await services.deleteOne(id);
 
-        if (deletedTour === null) {
-            return res.status(httpStatus.NOT_FOUND).json({
-                success: false,
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'Invalid ID',
-            });
-        }
+    if (!deletedTour) return next(APIError.notFound('tour not found'));
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'Tour deleted successfully',
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'tour deleted successfully',
+    });
 };
 
 /**
@@ -182,22 +131,18 @@ export const deleteTourHandler: RequestHandler = async (req: Request, res: Respo
  * @route  PATCH /api/v1/tours/stats
  * @access Public
  */
-export const getToursStatsHandler: RequestHandler = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const stats = await services.getToursStats();
+export const getToursStatsHandler: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const stats = await services.getToursStats();
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            data: { stats },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        data: { stats },
+    });
 };
 
 /**
@@ -205,22 +150,18 @@ export const getToursStatsHandler: RequestHandler = async (req: Request, res: Re
  * @route  PATCH /api/v1/tours/monthly-plan/:year
  * @access Public
  */
-export const getMonthlyPlanHandler = async (req: Request<GetMonthlyPlanInput>, res: Response): Promise<Response> => {
-    try {
-        const { year } = req.params;
-        const plan = await services.getMonthlyPlan(year);
+export const getMonthlyPlanHandler = async (
+    req: Request<GetMonthlyPlanInput>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    const { year } = req.params;
+    const plan = await services.getMonthlyPlan(year);
 
-        return res.status(httpStatus.OK).json({
-            success: true,
-            statusCode: httpStatus.OK,
-            results: plan.length,
-            data: { plan },
-        });
-    } catch (err: any) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message,
-        });
-    }
+    res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        results: plan.length,
+        data: { plan },
+    });
 };

@@ -27,5 +27,13 @@ async function main(): Promise<void> {
     }
 }
 
+// function shutdown(): void {
+//     logger.info(chalk.magentaBright.bold.underline('⇨ 🔴 Shutting down server...'));
+//     void server.close();
+// }
+
+// process.on('SIGTERM', shutdown);
+// // process.on('SIGINT', shutdown);
+
 // start the server
 main();
