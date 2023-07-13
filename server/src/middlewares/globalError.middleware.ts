@@ -52,9 +52,9 @@ export const globalErrorHandler = (err: APIError, _: Request, res: Response, nex
 
     const NODE_ENV = config.get<string>('NODE_ENV');
 
-    if (NODE_ENV === envs.PRODUCTION) {
+    if (NODE_ENV === envs.DEVELOPMENT) {
         sendErrorDev(err, res);
-    } else if (NODE_ENV === envs.DEVELOPMENT) {
+    } else if (NODE_ENV === envs.PRODUCTION) {
         let error = { ...err };
         if (err.name === 'CastError') error = handleCastErrorDB(error);
         if (err.code === 11000) error = handleDuplicateFieldsDB(error);
