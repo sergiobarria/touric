@@ -1,6 +1,6 @@
 import { createServer } from './server';
+import { logger } from './utils/logger';
 
-const PORT = 3000;
 const signals = ['SIGINT', 'SIGTERM'] as const;
 
 async function gracefulShutdown(app: Awaited<ReturnType<typeof createServer>>) {
@@ -10,7 +10,9 @@ async function gracefulShutdown(app: Awaited<ReturnType<typeof createServer>>) {
 async function bootstrap() {
     const app = await createServer();
 
-    await app.listen({ port: PORT });
+    logger.debug(app.config);
+
+    await app.listen({ port: app.config.PORT });
 
     for (const signal of signals) {
         process.on(signal, () => {
