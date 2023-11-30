@@ -15,12 +15,19 @@ module.exports = {
             }
         }
     ],
-    ignorePatterns: ['**/dist/**', '**/node_modules/**', '.eslintrc.js'],
+    ignorePatterns: [
+        '**/dist/**',
+        '**/node_modules/**',
+        '.eslintrc.js',
+        'drizzle.config.ts'
+    ],
     parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module'
     },
     rules: {
-        '@typescript-eslint/explicit-function-return-type': 'off'
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/return-await': 'off',
+        '@typescript-eslint/no-floating-promises': 'off'
     }
 };

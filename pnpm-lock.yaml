@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fastify/type-provider-typebox':
+    specifier: ^3.5.0
+    version: 3.5.0(@sinclair/typebox@0.31.28)
+  '@sinclair/typebox':
+    specifier: ^0.31.28
+    version: 0.31.28
   drizzle-orm:
     specifier: ^0.29.1
     version: 0.29.1(pg@8.11.3)
@@ -825,6 +831,14 @@ packages:
       fast-json-stringify: 5.9.1
     dev: false
 
+  /@fastify/type-provider-typebox@3.5.0(@sinclair/typebox@0.31.28):
+    resolution: {integrity: sha512-f48uGzvLflE/y4pvXOS8qjAC+mZmlqev9CPHnB8NDsBSL4EbeydO61IgPuzOkeNlAYeRP9Y56UOKj1XWFibgMw==}
+    peerDependencies:
+      '@sinclair/typebox': '>=0.26 <=0.31'
+    dependencies:
+      '@sinclair/typebox': 0.31.28
+    dev: false
+
   /@humanwhocodes/config-array@0.11.13:
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
     engines: {node: '>=10.10.0'}
@@ -898,6 +912,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@sinclair/typebox@0.31.28:
+    resolution: {integrity: sha512-/s55Jujywdw/Jpan+vsy6JZs1z2ZTGxTmbZTPiuSL2wz9mfzA2gN1zzaqmvfi4pq+uOt7Du85fkiwv5ymW84aQ==}
+    dev: false
 
   /@sindresorhus/is@4.6.0:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}

@@ -2,16 +2,18 @@
     "name": "touric",
     "version": "1.0.0",
     "description": "Server API for the Touric company",
-    "main": "index.js",
+    "main": "main.js",
     "keywords": [],
     "author": "",
     "license": "ISC",
     "scripts": {
         "build": "rimraf dist && swc ./src ./config -d dist",
-        "dev": "tsx watch src/main.ts",
+        "dev": "tsx watch ./src/main.ts",
         "start": "node dist/main.js"
     },
     "dependencies": {
+        "@fastify/type-provider-typebox": "^3.5.0",
+        "@sinclair/typebox": "^0.31.28",
         "drizzle-orm": "^0.29.1",
         "fastify": "^4.24.3",
         "http-status": "^1.7.3",
