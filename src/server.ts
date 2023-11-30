@@ -1,6 +1,6 @@
 import fastify from 'fastify';
 
-import { logger } from './utils/logger';
+import { logger } from '@/utils/logger';
 
 export function createServer() {
     const app = fastify({ logger });

@@ -1,23 +1,30 @@
 {
     "name": "touric",
     "version": "1.0.0",
-    "description": "",
+    "description": "Server API for the Touric company",
     "main": "index.js",
-    "scripts": {
-        "dev": "tsx watch src/main.ts"
-    },
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "scripts": {
+        "build": "rimraf dist && swc ./src ./config -d dist",
+        "dev": "tsx watch src/main.ts",
+        "start": "node dist/main.js"
+    },
     "dependencies": {
+        "drizzle-orm": "^0.29.1",
         "fastify": "^4.24.3",
         "http-status": "^1.7.3",
+        "pg": "^8.11.3",
         "pino": "^8.16.2",
         "pino-pretty": "^10.2.3"
     },
     "devDependencies": {
+        "@swc/cli": "^0.1.63",
+        "@swc/core": "^1.3.100",
         "@tsconfig/node-lts": "^18.12.5",
         "@typescript-eslint/eslint-plugin": "^6.4.0",
+        "drizzle-kit": "^0.20.6",
         "eslint": "^8.54.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-config-standard-with-typescript": "^40.0.0",
