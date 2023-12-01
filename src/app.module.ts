@@ -5,11 +5,12 @@ import Joi from 'joi';
 import { HealthModule } from './health/health.module';
 import { ToursModule } from './tours/tours.module';
 import { UsersModule } from './users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 const envVarsSchema = Joi.object({
     PORT: Joi.number().required(),
     NODE_ENV: Joi.string().valid('development', 'production').required(),
-    DATABASE_CONNECTION: Joi.string().required(),
+    DATABASE_URL: Joi.string().required(),
 });
 
 @Module({
@@ -22,6 +23,7 @@ const envVarsSchema = Joi.object({
         HealthModule,
         ToursModule,
         UsersModule,
+        PrismaModule,
     ],
     controllers: [],
     providers: [],

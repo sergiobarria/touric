@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Patch, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { ToursService } from './tours.service';
+import { CreateTourDto } from './dtos/CreateTourDto';
 
 @Controller({
     path: 'tours',
@@ -9,18 +10,32 @@ export class ToursController {
     constructor(private toursService: ToursService) {}
 
     @Get()
-    getTours(): any {
-        return this.toursService.getTours();
+    async getTours(): Promise<Record<string, unknown>> {
+        const tours = await this.toursService.getTours();
+        return {
+            success: true,
+            results: tours.length,
+            data: { tours },
+        };
     }
 
     @Get(':id')
-    getTour(@Param() params: any): string {
-        return 'get a single tour' + params.id;
+    async getTour(@Param() params: { id: string }): Promise<Record<string, unknown>> {
+        const tour = await this.toursService.getTourByID(params.id);
+
+        return {
+            success: true,
+            data: { tour },
+        };
     }
 
     @Post()
-    createTour(): string {
-        return 'create a new tour';
+    async createTour(@Body() tourData: CreateTourDto): Promise<Record<string, unknown>> {
+        const tour = await this.toursService.createTour(tourData);
+        return {
+            success: true,
+            data: { tour },
+        };
     }
 
     @Patch(':id')

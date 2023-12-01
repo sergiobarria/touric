@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
+import { Tour, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ToursService {
@@ -9,28 +11,21 @@ export class ToursService {
         fs.readFileSync(path.join(__dirname, '../../data/tours-simple.json'), 'utf-8'),
     );
 
-    createTour() {
-        return {
-            success: true,
-            data: { tour: 'create a new tour' },
-        };
+    constructor(private prisma: PrismaService) {}
+
+    async createTour(data: Prisma.TourCreateInput): Promise<Tour> {
+        return this.prisma.tour.create({ data });
     }
 
-    getTours() {
-        return {
-            success: true,
-            results: this.tours.length,
-            data: { tours: this.tours },
-        };
+    async getTours() {
+        return await this.prisma.tour.findMany();
     }
 
-    getTourByID(id: string | number) {
-        const tour = this.tours.find(tour => tour.id === +id);
+    getTourByID(id: string) {
+        const tour = this.prisma.tour.findFirst({ where: { id } });
+        if (!tour) throw new Error('Tour not found');
 
-        return {
-            success: true,
-            data: { tour },
-        };
+        return tour;
     }
 
     updateTour() {

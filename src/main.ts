@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app.module';
@@ -11,6 +11,7 @@ async function bootstrap() {
 
     // ====== App Config ======
     app.setGlobalPrefix('api');
+    app.useGlobalPipes(new ValidationPipe());
     app.enableVersioning({
         type: VersioningType.URI,
     });
