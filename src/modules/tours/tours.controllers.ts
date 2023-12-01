@@ -3,7 +3,9 @@ import path from 'path';
 
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import status from 'http-status';
+
 import { type GetTourParams, type CreateTourBody } from './tours.schemas';
+import * as services from './tours.services';
 
 const tours = JSON.parse(
     fs.readFileSync(path.join(__dirname, '../../../data/tours-simple.json')).toString()
@@ -13,10 +15,11 @@ export async function createTourHandler(
     request: FastifyRequest<{ Body: CreateTourBody }>,
     reply: FastifyReply
 ) {
-    const { name } = request.body;
+    const tour = await services.createOne({ ...request.body });
+
     return reply.code(status.CREATED).send({
         status: 'success',
-        data: { tour: 'Created tour', name }
+        data: { tour }
     });
 }
 

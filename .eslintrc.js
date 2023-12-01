@@ -19,7 +19,8 @@ module.exports = {
         '**/dist/**',
         '**/node_modules/**',
         '.eslintrc.js',
-        'drizzle.config.ts'
+        'drizzle.config.ts',
+        'scripts/**'
     ],
     parserOptions: {
         ecmaVersion: 'latest',
