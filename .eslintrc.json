@@ -10,6 +10,7 @@
     },
     "ignorePatterns": ["node_modules", "dist", "drizzle.config.ts"],
     "rules": {
-        "@typescript-eslint/no-floating-promises": "off"
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/return-await": "off"
     }
 }

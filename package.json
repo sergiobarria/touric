@@ -8,7 +8,8 @@
         "dev": "tsx watch src/server.ts",
         "start": "node dist/server.js",
         "make-migrations": "drizzle-kit generate:pg --config=drizzle.config.ts",
-        "migrate": "tsx scripts/migrate.ts"
+        "migrate": "tsx scripts/migrate.ts",
+        "create-resource": "./scripts/create-resource.sh"
     },
     "keywords": [],
     "author": "",
@@ -16,8 +17,10 @@
     "dependencies": {
         "argon2": "^0.31.2",
         "drizzle-orm": "^0.29.1",
+        "drizzle-zod": "^0.5.1",
         "fastify": "^4.24.3",
         "fastify-zod": "^1.4.0",
+        "http-status": "^1.7.3",
         "jsonwebtoken": "^9.0.2",
         "pg": "^8.11.3",
         "pino": "^8.16.2",
@@ -32,7 +35,6 @@
         "@types/jsonwebtoken": "^9.0.5",
         "@types/pg": "^8.10.9",
         "@typescript-eslint/eslint-plugin": "^6.4.0",
-        "dotenv": "^16.3.1",
         "drizzle-kit": "^0.20.6",
         "eslint": "^8.55.0",
         "eslint-config-prettier": "^9.1.0",

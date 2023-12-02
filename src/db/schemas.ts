@@ -9,7 +9,7 @@ export const tours = pgTable('tours', {
     maxGroupSize: integer('max_group_size').notNull(),
     difficulty: difficultyEnum('difficulty').notNull(),
     ratingsAvg: decimal('ratings_avg', { precision: 2, scale: 1 }).notNull(),
-    ratingsQuantity: integer('ratings_quantity').notNull(),
+    ratingsQty: integer('ratings_qty').notNull(),
     price: decimal('price', { precision: 8, scale: 2 }).notNull(),
     priceDiscount: decimal('price_discount', { precision: 8, scale: 2 }),
     summary: varchar('summary', { length: 256 }).notNull(),
