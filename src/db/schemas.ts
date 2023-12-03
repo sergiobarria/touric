@@ -1,6 +1,6 @@
 import { uuid, pgTable, integer, varchar, pgEnum, text, decimal } from 'drizzle-orm/pg-core';
 
-export const difficultyEnum = pgEnum('difficulty', ['easy', 'medium', 'difficult']);
+export const difficultyEnum = pgEnum('difficulty', ['easy', 'moderate', 'difficult']);
 
 export const tours = pgTable('tours', {
     id: uuid('id').primaryKey().defaultRandom(),
