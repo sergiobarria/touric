@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { tours } from '@/db/schemas';
+import { tours } from '../src/db/schemas';
 import type { InferInsertModel } from 'drizzle-orm';
 
 dotenv.config();

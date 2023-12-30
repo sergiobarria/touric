@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import status from 'http-status';
 
-import type { CreateTourBody, GetTourParams } from './tours.schemas';
+import type { CreateTourBody, GetTourParams, GetToursQuery } from './tours.schemas';
 import * as services from './tours.services';
 
 export async function createTourHandler(
@@ -16,8 +16,13 @@ export async function createTourHandler(
     });
 }
 
-export async function getToursHandler(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
-    const tours = await services.getTours();
+export async function getToursHandler(
+    request: FastifyRequest<{ Querystring: GetToursQuery }>,
+    reply: FastifyReply,
+): Promise<FastifyReply> {
+    const query = structuredClone(request.query);
+    console.log('request.query: ', query);
+    const tours = await services.getTours(query);
 
     return reply.code(status.OK).send({
         success: true,
