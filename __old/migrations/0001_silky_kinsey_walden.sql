@@ -1,1 +1,0 @@
-ALTER TABLE "tours" RENAME COLUMN "ratings_quantity" TO "ratings_qty";
