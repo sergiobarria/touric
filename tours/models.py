@@ -6,7 +6,7 @@ from model_utils import FieldTracker, Choices
 
 class Tour(models.Model):
     DIFFICULTY_CHOICES = Choices(
-        ("easy", "Easy"), ("medium", "Medium"), ("difficult", "Difficult")
+        ("easy", "Easy"), ("moderate", "Moderate"), ("difficult", "Difficult")
     )
 
     name = models.CharField(max_length=255, unique=True)
@@ -14,7 +14,7 @@ class Tour(models.Model):
     duration = models.PositiveIntegerField()
     max_group_size = models.PositiveIntegerField()
     difficulty = models.CharField(
-        max_length=20, choices=DIFFICULTY_CHOICES, default=DIFFICULTY_CHOICES.medium
+        max_length=20, choices=DIFFICULTY_CHOICES, default=DIFFICULTY_CHOICES.moderate
     )
     ratings_avg = models.FloatField(
         default=4.5, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)]
