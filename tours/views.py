@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.views import APIView
 
 from .models import Tour
 from .serializers import TourSerializer
