@@ -1,19 +1,11 @@
-.DS_Store
-node_modules
 .idea
-dist
-build
+.venv
+.DS_Store
+__pycache__
+_old
 
-logs/
-
-# Environment files
+# environment
 .env
-.env.local
-.env.*.local
-.env.development
-.env.test
-.env.production
 
-# other
-_old*
-
+# database
+db.sqlite3
