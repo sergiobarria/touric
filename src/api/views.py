@@ -2,19 +2,15 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 
-from .models import Tour
-from .serializers import TourSerializer
+from core.models import Tour
+from core.serializers import TourSerializer
 
 
-class ToursList(APIView):
-    """
-    List all tours, or create a new tour.
-    """
+class TourList(APIView):
+    """List all tours, or create a new tour."""
 
     def get(self, request):
-        """
-        Return a list of all tours.
-        """
+        """Return a list of all tours."""
         tours = Tour.objects.all()
         serializer = TourSerializer(tours, many=True)
 
@@ -28,9 +24,7 @@ class ToursList(APIView):
         )
 
     def post(self, request):
-        """
-        Create a new tour.
-        """
+        """Create a new tour."""
         serializer = TourSerializer(data=request.data)
 
         if not serializer.is_valid():
@@ -56,19 +50,17 @@ class ToursList(APIView):
 
 
 class SingleTour(APIView):
+    """Retrieve, update or delete a tour instance."""
+
     def _get_tour(self, id):
-        """
-        Helper method to get a tour by id.
-        """
+        """Helper method to get a tour instance"""
         try:
-            return Tour.objects.get(id=int(id))
+            return Tour.objects.get(id=id)
         except Tour.DoesNotExist:
             return None
 
     def _not_found(self):
-        """
-        Helper method to return a 404 response.
-        """
+        """Helper method to return 404 response"""
         return JsonResponse(
             {
                 "success": False,
@@ -79,9 +71,7 @@ class SingleTour(APIView):
         )
 
     def get(self, request, id):
-        """
-        Return a single tour by id.
-        """
+        """Return a single tour by ID."""
         tour = self._get_tour(id)
 
         if not tour:
@@ -97,9 +87,7 @@ class SingleTour(APIView):
         )
 
     def patch(self, request, id):
-        """
-        Update a single tour by id.
-        """
+        """Update a tour."""
         tour = self._get_tour(id)
 
         if not tour:
@@ -128,9 +116,7 @@ class SingleTour(APIView):
         )
 
     def delete(self, request, id):
-        """
-        Delete a single tour by id.
-        """
+        """Delete a tour."""
         tour = self._get_tour(id)
 
         if not tour:
@@ -141,7 +127,6 @@ class SingleTour(APIView):
             {
                 "success": True,
                 "code": status.HTTP_204_NO_CONTENT,
-                "message": "Tour deleted successfully",
             },
             status=status.HTTP_204_NO_CONTENT,
         )
