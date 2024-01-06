@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import SingleTour, TourList
+from . import views
 
 urlpatterns = [
-    path("tours/", TourList.as_view(), name="tours"),
-    path("tours/<str:id>", SingleTour.as_view(), name="single_tour"),
+    path("tours/", views.TourList.as_view(), name="tours"),
+    path("tours/<str:id>", views.SingleTour.as_view(), name="single_tour"),
+    path("users/", views.UserList.as_view(), name="users"),
+    path("users/<str:id>", views.SingleUser.as_view(), name="single_user"),
 ]
