@@ -8,6 +8,7 @@ load_dotenv()  # take environment variables from .env.
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -31,9 +32,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps,
     "rest_framework",
+    "django_filters",
     # Local apps,
-    "core",
     "api",
+    "core",
+    "tours",
 ]
 
 MIDDLEWARE = [
@@ -46,7 +49,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "touric_site.urls"
+ROOT_URLCONF = "touric.urls"
 
 TEMPLATES = [
     {
@@ -64,7 +67,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "touric_site.wsgi.application"
+WSGI_APPLICATION = "touric.wsgi.application"
+
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+    ],
+}
 
 
 # Database
@@ -72,8 +82,12 @@ WSGI_APPLICATION = "touric_site.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("PGDATABASE"),
+        "USER": os.environ.get("PGUSER"),
+        "PASSWORD": os.environ.get("PGPASSWORD"),
+        "HOST": os.environ.get("PGHOST"),
+        "PORT": os.environ.get("PGPORT"),
     }
 }
 
