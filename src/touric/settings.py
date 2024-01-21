@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps,
     "rest_framework",
+    "django_filters",
     # Local apps,
     "api",
     "core",
@@ -67,6 +68,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "touric.wsgi.application"
+
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+    ],
+}
 
 
 # Database

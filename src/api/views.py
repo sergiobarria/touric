@@ -1,6 +1,10 @@
 from django.http import JsonResponse
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 
 from core.utils import api_response
@@ -23,15 +27,89 @@ def get_health(request):
     )
 
 
+# =======================================================
+# ==================== TOURS METHODS ====================
+# =======================================================
+class TourFilter(filters.FilterSet):
+    """Filter class for tours"""
+
+    name = filters.CharFilter(lookup_expr="icontains")
+    duration = filters.NumberFilter(lookup_expr="exact")
+    duration_gte = filters.NumberFilter(field_name="duration", lookup_expr="gte")
+    duration_lte = filters.NumberFilter(field_name="duration", lookup_expr="lte")
+    max_group_size = filters.NumberFilter(lookup_expr="exact")
+    difficulty = filters.ChoiceFilter(choices=Tour.DIFFICULTY_CHOICES)
+    price = filters.NumberFilter(lookup_expr="exact")
+    price_get = filters.NumberFilter(field_name="price", lookup_expr="gte")
+    price_lte = filters.NumberFilter(field_name="price", lookup_expr="lte")
+
+    class Meta:
+        model = Tour
+        fields = [
+            "name",
+            "duration",
+            "duration_gte",
+            "duration_lte",
+            "max_group_size",
+            "difficulty",
+            "price",
+            "price_get",
+            "price_lte",
+        ]
+
+
+class CustomPagination(PageNumberPagination):
+    page_size_query_param = "page_size"
+    page_size = 10
+    max_page_size = 1000
+
+
 class TourList(APIView):
     """List all tours, or create a new tour."""
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = TourFilter
+    ordering_fields = [
+        "name",
+        "duration",
+        "max_group_size",
+        "difficulty",
+        "price",
+        "ratings_avg",
+    ]
+    ordering = ["name"]  # Default ordering
 
     def get(self, request):
         """Return a list of all tours."""
         tours = Tour.objects.all()
-        serializer = TourSerializer(tours, many=True)
+        fields = request.query_params.get("fields", None)
 
-        return api_response(serializer.data)
+        # Apply filters
+        filtered_queryset = TourFilter(request.query_params, queryset=tours).qs
+
+        # Apply ordering
+        ordering = OrderingFilter()
+        ordered_tours = ordering.filter_queryset(request, filtered_queryset, self)
+
+        # Apply pagination
+        paginator = CustomPagination()
+
+        # Determine fields to include in response
+        serializer_fields = fields.split(",") if fields is not None else None
+
+        # Check if pagination is needed, else return all results
+        if ordered_tours.count() > paginator.page_size:
+            # apply pagination
+            paginated_tours = paginator.paginate_queryset(ordered_tours, request)
+            serializer = TourSerializer(
+                paginated_tours, many=True, fields=serializer_fields
+            )
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            serializer = TourSerializer(
+                ordered_tours, many=True, fields=serializer_fields
+            )
+            return api_response(data=serializer.data)
 
     def post(self, request):
         """Create a new tour."""
@@ -108,6 +186,9 @@ class TourSingle(APIView):
         )
 
 
+# =======================================================
+# ==================== USERS METHODS ====================
+# =======================================================
 class UserList(APIView):
     """List all users, or create a new user."""
 

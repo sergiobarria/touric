@@ -10,11 +10,9 @@ def api_response(
     response_data = {
         "success": success,
         "code": status_code,
-        "data": data,
+        "count": len(data) if isinstance(data, list) and len(data) > 0 else 1,
+        "results": data,
     }
-
-    if isinstance(data, list) and len(data) > 0:
-        response_data["results"] = len(data)
 
     if message:
         response_data["message"] = message
