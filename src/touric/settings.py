@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -20,6 +21,7 @@ DEBUG = os.environ.get("DEBUG", True)
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = "users.CustomUser"
 
 # Application definition
 
@@ -32,11 +34,15 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps,
     "rest_framework",
+    "rest_framework_simplejwt",
     "django_filters",
+    "django_password_validators",
+    "django_password_validators.password_history",
     # Local apps,
     "api",
     "core",
     "tours",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -74,6 +80,17 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
     ],
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 
@@ -101,12 +118,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    # },
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+    {
+        "NAME": "django_password_validators.password_character_requirements.password_validation.PasswordCharacterValidator",
+        "OPTIONS": {
+            "min_length_digit": 1,
+            # "min_length_alpha": 2,
+            "min_length_special": 1,
+            # "min_length_lower": 4,
+            "min_length_upper": 1,
+            "special_characters": "~!@#$%^&*()_+{}\":;'[]",
+        },
     },
 ]
 

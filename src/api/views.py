@@ -8,12 +8,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from core.utils import api_response
 from tours.models import Tour
 
-from .serializers import TourSerializer
+from .serializers import LoginSerializer, TourSerializer, UserRegistrationSerializer
 
 
 @api_view(["GET"])
@@ -84,6 +86,9 @@ class TourList(APIView):
 
     def get(self, request):
         """Return a list of all tours."""
+        self.permission_classes = [IsAuthenticated]
+        self.check_permissions(request)
+
         tours = Tour.objects.all()
         fields = request.query_params.get("fields", None)
 
@@ -296,3 +301,51 @@ class UserSingle(APIView):
         return api_response(
             status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
         )
+
+
+# =======================================================
+# ===================== AUTH METHODS ====================
+# =======================================================
+@api_view(["POST"])
+def register(request):
+    """Register a new user."""
+    serializer = UserRegistrationSerializer(data=request.data)
+    if not serializer.is_valid():
+        return api_response(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            message="Validation Error",
+            errors=serializer.errors,
+        )
+
+    user = serializer.save()
+    refresh = RefreshToken.for_user(user)
+    data = {
+        **serializer.data,
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+    }
+    return api_response(
+        data=data,
+        status_code=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["POST"])
+def login(request):
+    """Login a user."""
+    serializer = LoginSerializer(data=request.data)
+
+    if not serializer.is_valid():
+        return api_response(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            message="Validation Error",
+            errors=serializer.errors,
+        )
+
+    user = serializer.validated_data["user"]
+    refresh = RefreshToken.for_user(user)
+    data = {
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+    }
+    return api_response(data=data, status_code=status.HTTP_200_OK)
