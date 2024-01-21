@@ -106,3 +106,41 @@ class TourSingle(APIView):
         return api_response(
             message="Tour deleted successfully.", status_code=status.HTTP_204_NO_CONTENT
         )
+
+
+class UserList(APIView):
+    """List all users, or create a new user."""
+
+    def get(self, request):
+        """Return a list of all users."""
+        return api_response(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
+        )
+
+    def post(self, request):
+        """Create a new user."""
+        return api_response(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
+        )
+
+
+class UserSingle(APIView):
+    """Retrive, update or delete a user instance."""
+
+    def get(self, request, id):
+        """Return a single user by ID."""
+        return api_response(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
+        )
+
+    def patch(self, request, id):
+        """Update a user."""
+        return api_response(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
+        )
+
+    def delete(self, request, id):
+        """Delete a user."""
+        return api_response(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED, message="Not implemented"
+        )
