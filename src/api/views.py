@@ -206,7 +206,7 @@ def tour_stats(request):
         .order_by("avg_price")
     )
 
-    return JsonResponse(list(stats), safe=False)
+    return api_response(list(stats))
 
 
 # =======================================================
