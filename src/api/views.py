@@ -1,3 +1,5 @@
+from collections import Counter, defaultdict
+
 from django.db.models import Avg, Count, Max, Min, Sum
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
@@ -207,6 +209,52 @@ def tour_stats(request):
     )
 
     return api_response(list(stats))
+
+
+@api_view(["GET"])
+def get_monthly_plan(request, year):
+    """Return a monthly plan for a given year"""
+    tours = Tour.objects.all()
+
+    # Dictionary to hold tour data by month
+    tours_by_month = defaultdict(list)
+    month_counter = Counter()
+
+    # Iterate through each tour and its start dates
+    for tour in tours:
+        for start_date in tour.start_dates:
+            if start_date.year == int(year):
+                month = start_date.month
+                tours_by_month[month].append(tour.name)
+                month_counter[month] += 1
+
+    # Aggregate data
+    monthly_plan = []
+
+    for month in sorted(tours_by_month):
+        month_data = {
+            "month": month,
+            "num_tour_starts": month_counter[month],
+            "tours": tours_by_month[month],
+        }
+        monthly_plan.append(month_data)
+
+        if len(monthly_plan) == 12:
+            break
+
+    return api_response(monthly_plan)
+
+
+@api_view(["GET"])
+def get_top_cheapest_tours(request):
+    """Return the top 5 cheapest tours"""
+    limit = 5
+    order = ["-ratings_avg", "price"]
+    fields = ["name", "price", "ratings_avg", "summary", "difficulty"]
+
+    top_tours = Tour.objects.order_by(*order)[:limit]
+    serializer = TourSerializer(top_tours, many=True, fields=fields)
+    return api_response(data=serializer.data)
 
 
 # =======================================================

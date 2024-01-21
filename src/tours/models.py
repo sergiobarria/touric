@@ -31,7 +31,7 @@ class Tour(models.Model):
     summary = models.TextField()
     description = models.TextField()
     start_dates = ArrayField(models.DateTimeField(), blank=True, null=True)
-    # TODO: Add cover_image, images, start_dates fields
+    # TODO: Add cover_image, images fields
 
     # Third party fields
     tracker = FieldTracker(
@@ -54,3 +54,8 @@ class Tour(models.Model):
             self.slug = slugify(self.name)
 
         return super(Tour, self).save(*args, **kwargs)
+
+    # Virtual fields
+    def get_duration_in_weeks(self):
+        """Return the duration in weeks rounded to 1 decimal place"""
+        return round(self.duration / 7, 1)

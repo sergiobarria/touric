@@ -24,6 +24,11 @@ class DynamicFieldModelSerializer(serializers.ModelSerializer):
 
 
 class TourSerializer(DynamicFieldModelSerializer):
+    duration_in_weeks = serializers.SerializerMethodField()
+
     class Meta:
         model = Tour
         fields = "__all__"
+
+    def get_duration_in_weeks(self, obj):
+        return obj.get_duration_in_weeks()
