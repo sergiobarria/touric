@@ -29,7 +29,6 @@ class Command(BaseCommand):
                 tour.pop("id")
                 tour.pop("image_cover")
                 tour.pop("images")
-                tour.pop("start_date")
 
                 Tour.objects.create(**tour)
                 self.stdout.write(self.style.SUCCESS(f"⇨ Created tour: {tour['name']}"))

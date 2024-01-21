@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
@@ -29,6 +30,7 @@ class Tour(models.Model):
     )
     summary = models.TextField()
     description = models.TextField()
+    start_dates = ArrayField(models.DateTimeField(), blank=True, null=True)
     # TODO: Add cover_image, images, start_dates fields
 
     # Third party fields
