@@ -1,3 +1,4 @@
+from django.db.models import Avg, Count, Max, Min, Sum
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -184,6 +185,28 @@ class TourSingle(APIView):
         return api_response(
             message="Tour deleted successfully.", status_code=status.HTTP_204_NO_CONTENT
         )
+
+
+@api_view(["GET"])
+def tour_stats(request):
+    """Return tours statistics"""
+    tours = Tour.objects.filter(ratings_avg__gte=4.5)
+
+    # Perform aggregation using Django ORM
+    stats = (
+        tours.values("difficulty")
+        .annotate(
+            num_tours=Count("id"),
+            num_ratings=Sum("ratings_qty"),
+            avg_rating=Avg("ratings_avg"),
+            avg_price=Avg("price"),
+            min_price=Min("price"),
+            max_price=Max("price"),
+        )
+        .order_by("avg_price")
+    )
+
+    return JsonResponse(list(stats), safe=False)
 
 
 # =======================================================
